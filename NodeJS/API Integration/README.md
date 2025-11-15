@@ -47,6 +47,7 @@ The SDK should cover (at minimum) these endpoints grouped by resource:
 - ⬜ gameConfig: `gameConfig.getDates`, `gameConfig.getGameConfig`
 - ⬜ user: `user.getUserLite`, `user.getUsersByCountry`
 - ✅ article: `article.getArticleById`, `article.getArticlesPaginated`
+- ✅ message: `message.getMessagesByArticleId`
 - ⬜ mu: `mu.getById`, `mu.getManyPaginated`
 - ⬜ transaction: `transaction.getPaginatedTransactions`
 - ⬜ upgrade: `upgrade.getUpgradeByTypeAndEntity`

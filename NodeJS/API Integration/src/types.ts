@@ -2,8 +2,10 @@
 
 import { getArticleByIdParams, getArticlesPaginatedParams } from 'resources/article';
 import { GetCompaniesParams, getCompanyByIdParams } from 'resources/company';
+import { GetMessagesByArticleIdParams } from 'resources/message';
 import { GetArticleByIdResponse, GetArticlesPaginatedResponse } from './DTOs/article.dto';
 import { GetCompaniesResponse, GetCompanyByIdResponse } from './DTOs/company.dto';
+import { GetMessagesByArticleIdResponse } from './DTOs/message.dto';
 
 /**
  * Configuration for the API client
@@ -61,6 +63,7 @@ export type EndpointMap = {
   'user.getUsersByCountry': { params: { countryId: string }; response: Record<string, unknown>[] };
   'article.getArticleById': { params: getArticleByIdParams; response: GetArticleByIdResponse };
   'article.getArticlesPaginated': { params: getArticlesPaginatedParams; response: GetArticlesPaginatedResponse };
+  'message.getMessagesByArticleId': { params: GetMessagesByArticleIdParams; response: GetMessagesByArticleIdResponse };
   'mu.getById': { params: { id: string }; response: Record<string, unknown> };
   'mu.getManyPaginated': { params: { page: number; limit: number }; response: Record<string, unknown>[] };
   'transaction.getPaginatedTransactions': { params: { page: number; limit: number }; response: Record<string, unknown>[] };
