@@ -27,29 +27,29 @@ Note on typing: all interfaces above (inputs/outputs/errors) will be represented
 - Configurable retry/backoff strategy for transient failures.
 - Lightweight: no heavy runtime dependencies unless necessary; compatible with Node.js LTS.
 
-## Endpoints (mapped from Postman screenshot)
+## Endpoints
 
 The SDK should cover (at minimum) these endpoints grouped by resource:
 
-- company: `company.getById`, `company.getCompanies`
-- country: `country.getCountryById`, `country.getAllCountries`
-- government: `government.getByCountryId`
-- region: `region.getById`, `region.getRegionsObject`
-- battle: `battle.getById`, `battle.getLiveBattleData`, `battle.getBattles`
-- round: `round.getById`, `round.getLastHits`
-- battleRanking: `battleRanking.getRanking`
-- itemTrading: `itemTrading.getPrices`
-- tradingOrder: `tradingOrder.getTopOrders`
-- itemOffer: `itemOffer.getById`
-- workOffer: `workOffer.getById`, `workOffer.getWorkOfferByCompanyId`, `workOffer.getWorkOffersPaginated`
-- ranking: `ranking.getRanking`
-- search: `search.searchAnything`
-- gameConfig: `gameConfig.getDates`, `gameConfig.getGameConfig`
-- user: `user.getUserLite`, `user.getUsersByCountry`
-- article: `article.getArticleById`, `article.getArticlesPaginated`
-- mu: `mu.getById`, `mu.getManyPaginated`
-- transaction: `transaction.getPaginatedTransactions`
-- upgrade: `upgrade.getUpgradeByTypeAndEntity`
+- ✅ company: `company.getById`, `company.getCompanies`
+- ⬜ country: `country.getCountryById`, `country.getAllCountries`
+- ⬜ government: `government.getByCountryId`
+- ⬜ region: `region.getById`, `region.getRegionsObject`
+- ⬜ battle: `battle.getById`, `battle.getLiveBattleData`, `battle.getBattles`
+- ⬜ round: `round.getById`, `round.getLastHits`
+- ⬜ battleRanking: `battleRanking.getRanking`
+- ⬜ itemTrading: `itemTrading.getPrices`
+- ⬜ tradingOrder: `tradingOrder.getTopOrders`
+- ⬜ itemOffer: `itemOffer.getById`
+- ⬜ workOffer: `workOffer.getById`, `workOffer.getWorkOfferByCompanyId`, `workOffer.getWorkOffersPaginated`
+- ⬜ ranking: `ranking.getRanking`
+- ⬜ search: `search.searchAnything`
+- ⬜ gameConfig: `gameConfig.getDates`, `gameConfig.getGameConfig`
+- ⬜ user: `user.getUserLite`, `user.getUsersByCountry`
+- ✅ article: `article.getArticleById`, `article.getArticlesPaginated`
+- ⬜ mu: `mu.getById`, `mu.getManyPaginated`
+- ⬜ transaction: `transaction.getPaginatedTransactions`
+- ⬜ upgrade: `upgrade.getUpgradeByTypeAndEntity`
 
 (Implementation note: map each named request to a function under the relevant resource namespace.)
 

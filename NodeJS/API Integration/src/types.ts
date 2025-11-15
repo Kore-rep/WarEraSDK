@@ -1,6 +1,8 @@
 // src/types.ts
 
+import { getArticleByIdParams, getArticlesPaginatedParams } from 'resources/article';
 import { GetCompaniesParams, getCompanyByIdParams } from 'resources/company';
+import { GetArticleByIdResponse, GetArticlesPaginatedResponse } from './DTOs/article.dto';
 import { GetCompaniesResponse, GetCompanyByIdResponse } from './DTOs/company.dto';
 
 /**
@@ -57,8 +59,8 @@ export type EndpointMap = {
   'gameConfig.getGameConfig': { params: Record<string, never>; response: Record<string, unknown> };
   'user.getUserLite': { params: { id: string }; response: Record<string, unknown> };
   'user.getUsersByCountry': { params: { countryId: string }; response: Record<string, unknown>[] };
-  'article.getArticleById': { params: { id: string }; response: Record<string, unknown> };
-  'article.getArticlesPaginated': { params: { page: number; limit: number }; response: Record<string, unknown>[] };
+  'article.getArticleById': { params: getArticleByIdParams; response: GetArticleByIdResponse };
+  'article.getArticlesPaginated': { params: getArticlesPaginatedParams; response: GetArticlesPaginatedResponse };
   'mu.getById': { params: { id: string }; response: Record<string, unknown> };
   'mu.getManyPaginated': { params: { page: number; limit: number }; response: Record<string, unknown>[] };
   'transaction.getPaginatedTransactions': { params: { page: number; limit: number }; response: Record<string, unknown>[] };

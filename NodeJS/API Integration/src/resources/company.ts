@@ -11,8 +11,14 @@ export interface getCompanyByIdParams {
  */
 export interface GetCompaniesParams {
   userId: string;
+  /**
+   * Warning: This parameter has not been tested yet.
+   */
   orgId?: string;
   perPage?: number;
+  /**
+   * Warning: This parameter has not been tested yet.
+   */
   cursor?: string;
   direction?: 'forward' | 'backward';
 }
