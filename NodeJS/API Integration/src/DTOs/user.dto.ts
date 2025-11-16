@@ -1,4 +1,30 @@
 /**
+ * Skill stat interface - Represents a single skill with all its modifiers and values
+ */
+export interface SkillStatDTO {
+    level: number;
+    ammoPercent: number | null;
+    buffsPercent: number | null;
+    debuffsPercent: number | null;
+    value: number | null;
+    weapon: number | null;
+    equipment: number | null;
+    limited: number | null;
+    total: number;
+    currentBarValue?: number;
+    hourlyBarRegen?: number;
+}
+
+/**
+ * Ranking entry interface - Represents a user's ranking in a specific category
+ */
+export interface RankingEntryDTO {
+    value: number;
+    rank: number;
+    tier: string;
+}
+
+/**
  *User DTO - Represents a user
  */
 export interface UserDTO {
@@ -33,207 +59,27 @@ export interface UserDTO {
         freeReset: number;
     };
     skills:  {
-        energy: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        health: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        hunger: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        attack: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        companies: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        entrepreneurship: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        production: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        criticalChance: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        criticalDamages: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        armor: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        precision: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        dodge: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
-        lootChance: {
-            level: number;
-            ammoPercent: number | null;
-            buffsPercent: number | null;
-            debuffsPercent: number | null;
-            value: number | null;
-            weapon: number | null;
-            equipment: number | null;
-            limited: number | null;
-            total: number;
-            currentBarValue?: number;
-            hourlyBarRegen?: number;
-            };
+        energy: SkillStatDTO;
+        health: SkillStatDTO;
+        hunger: SkillStatDTO;
+        attack: SkillStatDTO;
+        companies: SkillStatDTO;
+        entrepreneurship: SkillStatDTO;
+        production: SkillStatDTO;
+        criticalChance: SkillStatDTO;
+        criticalDamages: SkillStatDTO;
+        armor: SkillStatDTO;
+        precision: SkillStatDTO;
+        dodge: SkillStatDTO;
+        lootChance: SkillStatDTO;
     };
     rankings: {
-        userDamages: {
-            value: number;
-            rank: number;
-            tier: string;
-        };
-        weeklyUserDamages: {
-            value: number;
-            rank: number;
-            tier: string;
-        };
-        userWealth: {
-            value: number;
-            rank: number;
-            tier: string;
-        };
-        userLevel: {
-            value: number;
-            rank: number;
-            tier: string;
-        };
-        userReferrals:{
-            value: number;
-            rank: number;
-            tier: string;
-        };
-        userTerrain: {
-            value: number;
-            rank: number;
-            tier: string;
-        };
+        userDamages: RankingEntryDTO;
+        weeklyUserDamages: RankingEntryDTO;
+        userWealth: RankingEntryDTO;
+        userLevel: RankingEntryDTO;
+        userReferrals: RankingEntryDTO;
+        userTerrain: RankingEntryDTO;
     };
 }
 /**
