@@ -102,17 +102,17 @@ export interface UserByCountryItemDto {
 /**
  *All data returned from getUsersByCountry
  */ 
-export interface UserByCountryDataDto {
+export interface UsersByCountryDataDto {
   items: UserByCountryItemDto[];
   nextCursor: string | null;
 }
 
 /**
- * Response for user.getuserbycountry endpoint
+ * Response for user.getUsersByCountry endpoint
  */
-export interface UserByCountryResponseDto {
+export interface UsersByCountryResponseDto {
   result: {
-    data: UserByCountryDataDto;
+    data: UsersByCountryDataDto;
   };
 }
 

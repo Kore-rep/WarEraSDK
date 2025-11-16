@@ -1,5 +1,6 @@
 // src/types.ts
 
+import { GetUserLiteResponse, UsersByCountryResponseDto } from 'DTOs/user.dto';
 import { getArticleByIdParams, getArticlesPaginatedParams } from 'resources/article';
 import { GetCompaniesParams, getCompanyByIdParams } from 'resources/company';
 import { GetMessagesByArticleIdParams } from 'resources/message';
@@ -59,8 +60,8 @@ export type EndpointMap = {
   'search.searchAnything': { params: { query: string }; response: Record<string, unknown>[] };
   'gameConfig.getDates': { params: Record<string, never>; response: Record<string, unknown> };
   'gameConfig.getGameConfig': { params: Record<string, never>; response: Record<string, unknown> };
-  'user.getUserLite': { params: { id: string }; response: Record<string, unknown> };
-  'user.getUsersByCountry': { params: { countryId: string }; response: Record<string, unknown>[] };
+  'user.getUserLite': { params: { id: string }; response: GetUserLiteResponse };
+  'user.getUsersByCountry': { params: { countryId: string }; response: UsersByCountryResponseDto };
   'article.getArticleById': { params: getArticleByIdParams; response: GetArticleByIdResponse };
   'article.getArticlesPaginated': { params: getArticlesPaginatedParams; response: GetArticlesPaginatedResponse };
   'message.getMessagesByArticleId': { params: GetMessagesByArticleIdParams; response: GetMessagesByArticleIdResponse };
