@@ -32,7 +32,7 @@ Note on typing: all interfaces above (inputs/outputs/errors) will be represented
 The SDK should cover (at minimum) these endpoints grouped by resource:
 
 - ✅ company: `company.getById`, `company.getCompanies`
-- ⬜ country: `country.getCountryById`, `country.getAllCountries`
+- ✅ country: `country.getCountryById`, `country.getAllCountries`
 - ⬜ government: `government.getByCountryId`
 - ⬜ region: `region.getById`, `region.getRegionsObject`
 - ⬜ battle: `battle.getById`, `battle.getLiveBattleData`, `battle.getBattles`
@@ -45,7 +45,7 @@ The SDK should cover (at minimum) these endpoints grouped by resource:
 - ⬜ ranking: `ranking.getRanking`
 - ⬜ search: `search.searchAnything`
 - ⬜ gameConfig: `gameConfig.getDates`, `gameConfig.getGameConfig`
-- ⬜ user: `user.getUserLite`, `user.getUsersByCountry`
+- ✅ user: `user.getUserLite`, `user.getUsersByCountry`
 - ✅ article: `article.getArticleById`, `article.getArticlesPaginated`
 - ✅ message: `message.getMessagesByArticleId`
 - ⬜ mu: `mu.getById`, `mu.getManyPaginated`

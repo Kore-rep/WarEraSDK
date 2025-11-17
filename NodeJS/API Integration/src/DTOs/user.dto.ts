@@ -1,3 +1,4 @@
+import { RankingEntryDTO } from './constants.dto';
 /**
  * Skill stat interface - Represents a single skill with all its modifiers and values
  */
@@ -13,15 +14,6 @@ export interface SkillStatDTO {
     total: number;
     currentBarValue?: number;
     hourlyBarRegen?: number;
-}
-
-/**
- * Ranking entry interface - Represents a user's ranking in a specific category
- */
-export interface RankingEntryDTO {
-    value: number;
-    rank: number;
-    tier: string;
 }
 
 /**
