@@ -1,9 +1,9 @@
-import { RankingEntryDTO } from './user.dto';
+import { RankingEntryDTO, StrategicResourcesDTO,CountryCode,CountryName  } from './constants.dto';
 
 /** 
  * Country Taxesinterface - Represents taxes earned by a country
  */
-export interface CountryTaxesDto {
+export interface CountryTaxesDTO {
   income: number;
   market: number;
   selfWork: number;
@@ -13,10 +13,10 @@ export interface CountryTaxesDto {
  */
 export interface CountryDto {
     _id: string;
-    name: string;               // e.g., "United States", "France" etc.
-    code: string;               // e.g., "US", "FR" etc.
+    name: CountryName;               // e.g., "United States", "France" etc.
+    code: CountryCode;          // e.g., "US", "FR" etc.
     money: number;
-    taxes: CountryTaxesDto;
+    taxes: CountryTaxesDTO;
     orgs: string[];             // org IDs
     allies: string[];           // country IDs
     warsWith: string[];         // country IDs
@@ -26,19 +26,22 @@ export interface CountryDto {
         countryRegionDiff: RankingEntryDTO;
         countryDamages: RankingEntryDTO;
         weeklyCountryDamages: RankingEntryDTO;
+        weeklyCountryDamagesPerCitizen: RankingEntryDTO;
         countryDevelopment: RankingEntryDTO;
         countryActivePopulation: RankingEntryDTO;
         countryWealth: RankingEntryDTO;
         countryProductionBonus: RankingEntryDTO;
     };
+    strategicResources: StrategicResourcesDTO;
     __v: number;                // unsure purpose
+    currentBattleOrder: string[]; 
     updatedAt: string;          // ISO timestamp
-    enemy: string;              // country ID 
+    enemy: string[];              // country ID 
 }
 /**
  * Response for country.getAllCountries endpoint
  */
-export interface GetAllCountriesresponse {
+export interface GetAllCountriesResponse {
     result: {
         data: CountryDto[];     // array of countries
     }
@@ -46,7 +49,7 @@ export interface GetAllCountriesresponse {
 /**
  * Response for country.getCountryById endpoint
  */
-export interface GetCountrybyIDresponse {
+export interface GetCountrybyIDResponse {
     result: {
         data: CountryDto;       // single country
     }

@@ -7,7 +7,7 @@ import { GetMessagesByArticleIdParams } from 'resources/message';
 import { GetArticleByIdResponse, GetArticlesPaginatedResponse } from './DTOs/article.dto';
 import { GetCompaniesResponse, GetCompanyByIdResponse } from './DTOs/company.dto';
 import { GetMessagesByArticleIdResponse } from './DTOs/message.dto';
-import { GetAllCountriesresponse, GetCountrybyIDresponse } from './DTOs/country.dto';
+import { GetAllCountriesResponse, GetCountrybyIDResponse } from './DTOs/country.dto';
 
 /**
  * Configuration for the API client
@@ -40,8 +40,8 @@ export interface QueuedCall<T = unknown> {
 export type EndpointMap = {
   'company.getById': { params: getCompanyByIdParams; response: GetCompanyByIdResponse };
   'company.getCompanies': { params: GetCompaniesParams; response: GetCompaniesResponse };
-  'country.getCountryById': { params: { countryId: string }; response: GetCountrybyIDresponse };
-  'country.getAllCountries': { params: Record<string, never>; response: GetAllCountriesresponse };
+  'country.getCountryById': { params: { countryId: string }; response: GetCountrybyIDResponse };
+  'country.getAllCountries': { params: Record<string, never>; response: GetAllCountriesResponse };
   'government.getByCountryId': { params: { countryId: string }; response: Record<string, unknown> };
   'region.getById': { params: { id: string }; response: Record<string, unknown> };
   'region.getRegionsObject': { params: Record<string, never>; response: Record<string, unknown> };
