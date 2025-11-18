@@ -8,8 +8,10 @@ import { GetArticleByIdResponse, GetArticlesPaginatedResponse } from './DTOs/art
 import { GetCompaniesResponse, GetCompanyByIdResponse } from './DTOs/company.dto';
 import { GetMessagesByArticleIdResponse } from './DTOs/message.dto';
 import { GetAllCountriesResponse, GetCountrybyIDResponse } from './DTOs/country.dto';
+import { RegionGetRegionsObjectResponse, GetRegionbyIdResponse} from './DTOs/regions.dto';
+import { getRegionByIdParams } from 'resources/region';
 
-/**
+/*
  * Configuration for the API client
  */
 export interface APIConfig {
@@ -43,8 +45,8 @@ export type EndpointMap = {
   'country.getCountryById': { params: { countryId: string }; response: GetCountrybyIDResponse };
   'country.getAllCountries': { params: Record<string, never>; response: GetAllCountriesResponse };
   'government.getByCountryId': { params: { countryId: string }; response: Record<string, unknown> };
-  'region.getById': { params: { id: string }; response: Record<string, unknown> };
-  'region.getRegionsObject': { params: Record<string, never>; response: Record<string, unknown> };
+  'region.getById': { params: getRegionByIdParams; response: GetRegionbyIdResponse };
+  'region.getRegionsObject': { params: Record<string, never>; response: RegionGetRegionsObjectResponse };
   'battle.getById': { params: { id: string }; response: Record<string, unknown> };
   'battle.getLiveBattleData': { params: Record<string, never>; response: Record<string, unknown> };
   'battle.getBattles': { params: Record<string, never>; response: Record<string, unknown>[] };

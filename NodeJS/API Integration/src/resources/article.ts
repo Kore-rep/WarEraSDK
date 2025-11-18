@@ -1,6 +1,7 @@
 // src/resources/article.ts
 
-import { ArticleCategory, ArticleLanguage, GetArticleByIdResponse, GetArticlesPaginatedResponse } from '../DTOs/article.dto';
+import { GetArticleByIdResponse, GetArticlesPaginatedResponse } from '../DTOs/article.dto';
+import { ArticleLanguage, ArticleCategory } from '../DTOs/constants.dto';
 import { request } from '../request';
 
 export interface getArticleByIdParams {

@@ -72,8 +72,13 @@ export interface UserDTO {
         userLevel: RankingEntryDTO;
         userReferrals: RankingEntryDTO;
         userTerrain: RankingEntryDTO;
+        userSubscribers : RankingEntryDTO;
+        userPremiumMonths: RankingEntryDTO;
+        userPremiumGifts: RankingEntryDTO;
     };
-}
+  
+    };
+
 /**
  * Response for user.getUserLite endpoint
  */
