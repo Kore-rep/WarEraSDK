@@ -21,6 +21,7 @@ export interface APIConfig {
     minTimeout: number;
     maxTimeout: number;
   };
+  cacheTTL?: number;
 }
 
 /**

@@ -1,22 +1,22 @@
-import type { article } from '../resources/article';
-import type { battle } from '../resources/battle';
-import type { battleRanking } from '../resources/battleRanking';
-import type { company } from '../resources/company';
-import type { country } from '../resources/country';
-import type { gameConfig } from '../resources/gameConfig';
-import type { government } from '../resources/government';
-import type { itemOffer } from '../resources/itemOffer';
-import type { itemTrading } from '../resources/itemTrading';
-import type { mu } from '../resources/mu';
-import type { ranking } from '../resources/ranking';
-import type { region } from '../resources/region';
-import type { round } from '../resources/round';
-import type { search } from '../resources/search';
-import type { tradingOrder } from '../resources/tradingOrder';
-import type { transaction } from '../resources/transaction';
-import type { upgrade } from '../resources/upgrade';
-import type { user } from '../resources/user';
-import type { workOffer } from '../resources/workOffer';
+import type { article } from "../resources/article";
+import type { battle } from "../resources/battle";
+import type { battleRanking } from "../resources/battleRanking";
+import type { company } from "../resources/company";
+import type { country } from "../resources/country";
+import type { gameConfig } from "../resources/gameConfig";
+import type { government } from "../resources/government";
+import type { itemOffer } from "../resources/itemOffer";
+import type { itemTrading } from "../resources/itemTrading";
+import type { mu } from "../resources/mu";
+import type { ranking } from "../resources/ranking";
+import type { region } from "../resources/region";
+import type { round } from "../resources/round";
+import type { search } from "../resources/search";
+import type { tradingOrder } from "../resources/tradingOrder";
+import type { transaction } from "../resources/transaction";
+import type { upgrade } from "../resources/upgrade";
+import type { user } from "../resources/user";
+import type { workOffer } from "../resources/workOffer";
 
 /**
  * Resource wrapper type - removes the baseUrl parameter from all methods
@@ -61,4 +61,9 @@ export interface APIClient {
    * Clear the batch queue without executing
    */
   clearBatch: () => void;
+
+  invalidateCache: (
+    endpointName: string,
+    params: Record<string, unknown>
+  ) => Promise<void>;
 }
