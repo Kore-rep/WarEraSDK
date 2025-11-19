@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { EndpointMap, EndpointName, QueuedCall } from "./types";
 import { CacheProvider } from "./cache/cacheProvider";
-import { CacheConfig, defaultCacheConfig } from "cache/CacheConfig";
+import { CacheConfig, defaultCacheConfig } from "./cache/cacheConfig";
+import { CacheManager } from "./cache/cacheManager";
 
 /**
  * API Error class
@@ -25,7 +26,8 @@ class RequestContext {
   private batchMode: boolean = false;
   private queue: QueuedCall<unknown>[] = [];
   private baseUrl: string = "";
-  private cache: CacheProvider | null = null;
+  // This code is executed immediately and so results in this initalizing the cache instance and overriding the settings
+  private cache: CacheProvider = CacheManager.getCache();
 
   setBatchMode(enabled: boolean): void {
     this.batchMode = enabled;
@@ -33,10 +35,6 @@ class RequestContext {
 
   setBaseUrl(url: string): void {
     this.baseUrl = url;
-  }
-
-  setCache(cache: CacheProvider | null): void {
-    this.cache = cache;
   }
 
   isBatchMode(): boolean {

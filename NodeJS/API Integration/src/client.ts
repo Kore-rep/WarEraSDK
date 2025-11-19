@@ -21,7 +21,7 @@ import { upgrade } from "./resources/upgrade";
 import { user } from "./resources/user";
 import { workOffer } from "./resources/workOffer";
 import { APIConfig } from "./types";
-import { CacheManager } from "cache/cacheManager";
+import { CacheManager } from "./cache/cacheManager";
 
 const DEFAULT_BASE_URL = "https://api.example.com"; // TODO: Replace with actual API URL
 
@@ -32,27 +32,17 @@ type ResourceMethods = Record<
 
 export function createAPI(
   config: APIConfig = {},
-  cache?: CacheProvider | null
+  customCacheProvider?: CacheProvider | null
 ): APIClient {
   const baseUrl = config.baseUrl || DEFAULT_BASE_URL;
   const batchMode = config.batch || false;
 
-  let cacheProvider: CacheProvider | null;
-  if (cache === null) {
-    // Explicitly disabled caching
-    cacheProvider = null;
-  } else if (cache === undefined) {
-    // Default: use shared singleton memory cache
-    cacheProvider = CacheManager.getDefaultCache();
-  } else {
-    // Custom cache provider
-    cacheProvider = cache;
-  }
+  // Init cache
+  CacheManager.getCache(customCacheProvider);
 
   // Set up the request context
   requestContext.setBatchMode(batchMode);
   requestContext.setBaseUrl(baseUrl);
-  requestContext.setCache(cacheProvider);
 
   // Create resource wrappers that bind baseUrl to each function
   const createResourceWrapper = <T extends ResourceMethods>(
