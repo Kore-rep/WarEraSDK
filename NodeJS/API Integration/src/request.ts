@@ -66,51 +66,92 @@ class RequestContext {
     }
 
     try {
-      // Build the comma-separated function names
-      const functionNames = this.queue.map((call) => call.name).join(",");
+      const results: unknown[] = new Array(this.queue.length);
+      const missingIndexes: number[] = [];
+      const missingFunctionNames: string[] = [];
+      const missingInput: Record<string, unknown>[] = [];
 
-      // Build the input object with numeric keys
-      const inputObj: Record<string, Record<string, unknown>> = {};
-      this.queue.forEach((call, index) => {
-        inputObj[index] = call.params;
-      });
-
-      // Construct the batch URL
-      const url = `${this.baseUrl}/${functionNames}`;
-      const response = await axios.get<unknown[]>(url, {
-        params: {
-          input: JSON.stringify(inputObj),
-          batch: 1,
-        },
-      } as AxiosRequestConfig);
-
-      // Response should be an array matching the order of requests
-      const results = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-
-      // Cache each result if caching is enabled
+      // 1. Pre-check cache for each queued call
       if (this.cache) {
         await Promise.all(
           this.queue.map(async (call, index) => {
             const cacheKey = this.getCacheKey(call.name, call.params);
+            const cached = await this.cache!.get<unknown>(cacheKey);
+
+            if (cached !== undefined) {
+              // Fill from cache
+              results[index] = cached;
+            } else {
+              // Mark for batch request
+              missingIndexes.push(index);
+              missingFunctionNames.push(call.name);
+              missingInput.push(call.params);
+            }
+          })
+        );
+      } else {
+        // No cache provider, all calls must be fetched
+        this.queue.forEach((call, index) => {
+          missingIndexes.push(index);
+          missingFunctionNames.push(call.name);
+          missingInput.push(call.params);
+        });
+      }
+
+      // 2. If everything was cached, return immediately
+      if (missingIndexes.length === 0) {
+        this.queue.forEach((call, index) => call.resolve(results[index]));
+        this.queue = [];
+        return results;
+      }
+
+      // 3. Execute batch request only for the missing items
+      const batchFunctionNames = missingFunctionNames.join(",");
+      const reducedInputObj: Record<string, Record<string, unknown>> = {};
+
+      missingInput.forEach((params, i) => {
+        reducedInputObj[i] = params;
+      });
+
+      const url = `${this.baseUrl}/${batchFunctionNames}`;
+
+      const response = await axios.get<unknown[]>(url, {
+        params: {
+          input: JSON.stringify(reducedInputObj),
+          batch: 1,
+        },
+      } as AxiosRequestConfig);
+
+      const fetchedResults = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      // 4. Merge fetched results back into the global results array
+      missingIndexes.forEach((originalIndex, i) => {
+        results[originalIndex] = fetchedResults[i];
+      });
+
+      // 5. Cache newly fetched results
+      if (this.cache) {
+        await Promise.all(
+          missingIndexes.map(async (index, i) => {
+            const call = this.queue[index];
+            const cacheKey = this.getCacheKey(call.name, call.params);
             await this.cache!.set(
               cacheKey,
-              results[index],
+              fetchedResults[i],
               defaultCacheConfig.ttl
             );
           })
         );
       }
 
-      // Resolve each queued promise with its corresponding result
+      // 6. Resolve queued promises
       this.queue.forEach((call, index) => {
         call.resolve(results[index]);
       });
 
-      // Clear the queue
       this.queue = [];
-
       return results;
     } catch (error) {
       const apiError = error as {
@@ -118,18 +159,14 @@ class RequestContext {
         response?: { status: number; data: unknown };
       };
 
-      // Reject all queued promises with the error
       const errorObj = new ApiError(
         apiError.message,
         apiError.response?.status,
         apiError.response?.data
       );
 
-      this.queue.forEach((call) => {
-        call.reject(errorObj);
-      });
-
-      // Clear the queue
+      // Reject all queued calls
+      this.queue.forEach((call) => call.reject(errorObj));
       this.queue = [];
 
       throw errorObj;
