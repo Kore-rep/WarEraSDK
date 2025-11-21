@@ -38,11 +38,12 @@ export function createAPI(
   const batchMode = config.batch || false;
 
   // Init cache
-  CacheManager.getCache(customCacheProvider);
+  const cache = CacheManager.getCache(customCacheProvider);
 
   // Set up the request context
   requestContext.setBatchMode(batchMode);
   requestContext.setBaseUrl(baseUrl);
+  requestContext.setCache(cache);
 
   // Create resource wrappers that bind baseUrl to each function
   const createResourceWrapper = <T extends ResourceMethods>(

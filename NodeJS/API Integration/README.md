@@ -91,7 +91,7 @@ API surface suggestions
 
 - client.request(endpointName, params) -> Promise<ResponseType>
 - client.batch(calls: Array<{ name: EndpointName, params: Params }>) -> Promise<Array<ResponseType>>
-- client.group(async (batch) => { /* use batch.* methods which queue up calls and then execute as a single batched request */ })
+- client.group(async (batch) => { /_ use batch._ methods which queue up calls and then execute as a single batched request \*/ })
 
 TypeScript generics sketch
 
@@ -99,19 +99,30 @@ Create a central mapping of endpoints to their parameter and response types. Thi
 
 ```ts
 type EndpointMap = {
-  'country.getCountryById': { params: { countryId: string }; response: Country };
-  'government.getByCountryId': { params: { countryId: string }; response: Government };
+  "country.getCountryById": {
+    params: { countryId: string };
+    response: Country;
+  };
+  "government.getByCountryId": {
+    params: { countryId: string };
+    response: Government;
+  };
   // ...other endpoints
 };
 
 type EndpointName = keyof EndpointMap;
 
-function request<K extends EndpointName>(name: K, params: EndpointMap[K]['params']): Promise<EndpointMap[K]['response']> {
+function request<K extends EndpointName>(
+  name: K,
+  params: EndpointMap[K]["params"]
+): Promise<EndpointMap[K]["response"]> {
   // implementation delegates to low-level fetcher
 }
 
 // batch accepts a typed list and returns typed results in the same order
-function batch<T extends EndpointName[]>(calls: { [I in keyof T]: { name: T[I]; params: EndpointMap[T[I]]['params'] } }): Promise<{ [I in keyof T]: EndpointMap[T[I]]['response'] }> {
+function batch<T extends EndpointName[]>(calls: {
+  [I in keyof T]: { name: T[I]; params: EndpointMap[T[I]]["params"] };
+}): Promise<{ [I in keyof T]: EndpointMap[T[I]]["response"] }> {
   // build URL like: `${baseUrl}/${funcs}?input=${encodedInput}&batch=1`
 }
 ```
@@ -123,8 +134,12 @@ Batch URL builder (implementation detail)
 
 ```js
 const inputObj = {};
-calls.forEach((c, i) => { inputObj[i] = c.params; });
-const url = `${baseUrl}/${funcs}?input=${encodeURIComponent(JSON.stringify(inputObj))}&batch=1`;
+calls.forEach((c, i) => {
+  inputObj[i] = c.params;
+});
+const url = `${baseUrl}/${funcs}?input=${encodeURIComponent(
+  JSON.stringify(inputObj)
+)}&batch=1`;
 ```
 
 3. Perform GET on the URL and parse the array/object response; map positional results back to callers.
@@ -135,8 +150,8 @@ Practical SDK patterns
 
 ```ts
 const results = await client.batch([
-  { name: 'country.getCountryById', params: { countryId } },
-  { name: 'government.getByCountryId', params: { countryId } }
+  { name: "country.getCountryById", params: { countryId } },
+  { name: "government.getByCountryId", params: { countryId } },
 ]);
 
 const countryResult = results[0] as Country;
@@ -147,8 +162,8 @@ const governmentResult = results[1] as Government;
 
 ```ts
 await client.group(async (b) => {
-  const countryP = b.request('country.getCountryById', { countryId });
-  const govP = b.request('government.getByCountryId', { countryId });
+  const countryP = b.request("country.getCountryById", { countryId });
+  const govP = b.request("government.getByCountryId", { countryId });
   // the builder queues both and executes a single batched request
   const [country, government] = await Promise.all([countryP, govP]);
 });
@@ -161,6 +176,62 @@ Notes & caveats
 - Order guarantees: results are returned in the same order as the function names, so maintain positional mapping.
 - Testing: add unit tests for the batch URL builder, positional mapping, error propagation, and type contract correctness.
 
+## Caching
+
+The SDK includes built-in basic in-memory caching. You are able to disable it, enable it or provide your own custom caching implementation.
+
+```js
+export class SimpleMemoryCache implements CacheProvider {
+  private store = new Map<
+    string,
+    { value: unknown; expiresAt: number | null }
+  >();
+
+  async get<T>(key: string): Promise<T | undefined> {
+    console.log("GETTING");
+    const entry = this.store.get(key);
+
+    if (!entry) return undefined;
+
+    // Check expiration
+    if (entry.expiresAt !== null && Date.now() > entry.expiresAt) {
+      this.store.delete(key);
+      return undefined;
+    }
+
+    return entry.value as T;
+  }
+
+  async set(key: string, value: unknown, ttl?: number): Promise<void> {
+    const expiresAt = typeof ttl === "number" ? Date.now() + ttl : null;
+
+    this.store.set(key, { value, expiresAt });
+  }
+
+  async del(key: string): Promise<void> {
+    this.store.delete(key);
+  }
+}
+
+// Custom Cache
+const client = createAPI({
+  ...config
+},
+new SimpleMemoryCache())
+
+// Default caching
+const client = createAPI({
+  ...config
+}) // leave cache as undefined
+
+// Disable caching
+const client = createAPI({
+  ...config
+},
+null)
+
+```
+
 ## Usage examples
 
 Minimal example using `axios`.
@@ -169,7 +240,7 @@ Minimal example using `axios`.
 
 ```js
 // Create a client (example API)
-import Api from '../API Integration'; // planned path for SDK factory, subject to change
+import Api from "../API Integration"; // planned path for SDK factory, subject to change
 
 const client = createAPI({
   //baseUrl: 'https://api.example.com' // baseUrl will be built-in, but can point to a new url if needed
@@ -177,16 +248,16 @@ const client = createAPI({
 
 async function main() {
   // simple call
-  const company = await client.company.getById('1234');
-  console.log('company', company);
+  const company = await client.company.getById("1234");
+  console.log("company", company);
 
   // paginated example
   const battles = await client.battle.getBattles({ page: 1, limit: 50 });
-  console.log('battles', battles.items.length);
+  console.log("battles", battles.items.length);
 }
 
-main().catch(err => {
-  console.error('Request failed', err);
+main().catch((err) => {
+  console.error("Request failed", err);
 });
 ```
 

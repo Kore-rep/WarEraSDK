@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig } from "axios";
 import { EndpointMap, EndpointName, QueuedCall } from "./types";
 import { CacheProvider } from "./cache/cacheProvider";
 import { CacheConfig, defaultCacheConfig } from "./cache/cacheConfig";
-import { CacheManager } from "./cache/cacheManager";
 
 /**
  * API Error class
@@ -27,7 +26,7 @@ class RequestContext {
   private queue: QueuedCall<unknown>[] = [];
   private baseUrl: string = "";
   // This code is executed immediately and so results in this initalizing the cache instance and overriding the settings
-  private cache: CacheProvider = CacheManager.getCache();
+  private cache: CacheProvider | null = null;
 
   setBatchMode(enabled: boolean): void {
     this.batchMode = enabled;
@@ -43,6 +42,11 @@ class RequestContext {
 
   getCache(): CacheProvider | null {
     return this.cache;
+  }
+
+  // TODO: Once we move away from singleton request pattern, can remove this potentially
+  setCache(cache: CacheProvider): void {
+    this.cache = cache;
   }
 
   queueCall<T>(name: string, params: Record<string, unknown>): Promise<T> {
@@ -183,7 +187,7 @@ export async function request<K extends EndpointName>(
 
   // Check cache first (only for non-batch mode)
   if (shouldCache && !requestContext.isBatchMode() && cacheKey) {
-    const cached = await cache!.get<EndpointMap[K]["response"]>(cacheKey);
+    const cached = await cache.get<EndpointMap[K]["response"]>(cacheKey);
     if (cached !== undefined) {
       return cached;
     }
@@ -207,7 +211,7 @@ export async function request<K extends EndpointName>(
 
       // Cache the response
       if (shouldCache && cacheKey) {
-        await cache!.set(cacheKey, response.data, ttl);
+        await cache.set(cacheKey, response.data, ttl);
       }
 
       return response.data;
