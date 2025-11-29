@@ -81,7 +81,7 @@ export interface RegionDTO {
 /**
  *  Response for region.getbyId endpoint
  */
-export interface GetRegionbyIdResponse {
+export interface GetRegionByIdResponse {
   result: {
     data: RegionDTO[];
   };

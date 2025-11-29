@@ -1,12 +1,17 @@
 // src/resources/itemTrading.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the item trading resource.
+ * Creates item trading resource methods bound to the provided request context.
  */
-export const itemTrading = {
-  getPrices: async (baseUrl: string) => {
-    return request('itemTrading.getPrices', {}, baseUrl);
-  },
-};
+export function itemTrading(ctx: RequestContext) {
+  return {
+    getPrices: (): Promise<EndpointMap["itemTrading.getPrices"]["response"]> => {
+      return ctx.request("itemTrading.getPrices", {});
+    },
+  };
+}
+
+export type ItemTradingResource = ReturnType<typeof itemTrading>;

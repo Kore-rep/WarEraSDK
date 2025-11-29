@@ -1,12 +1,17 @@
 // src/resources/battleRanking.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the battle ranking resource.
+ * Creates battle ranking resource methods bound to the provided request context.
  */
-export const battleRanking = {
-  getRanking: async (baseUrl: string) => {
-    return request('battleRanking.getRanking', {}, baseUrl);
-  },
-};
+export function battleRanking(ctx: RequestContext) {
+  return {
+    getRanking: async (): Promise<EndpointMap["battleRanking.getRanking"]["response"]> => {
+      return await ctx.request("battleRanking.getRanking", {});
+    },
+  };
+}
+
+export type BattleRankingResource = ReturnType<typeof battleRanking>;

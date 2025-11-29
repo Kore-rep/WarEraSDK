@@ -1,12 +1,23 @@
 // src/resources/transaction.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the transaction resource.
+ * Creates transaction resource methods bound to the provided request context.
  */
-export const transaction = {
-  getPaginatedTransactions: async (baseUrl: string, page: number, limit: number) => {
-    return request('transaction.getPaginatedTransactions', { page, limit }, baseUrl);
-  },
-};
+export function transaction(ctx: RequestContext) {
+  return {
+    getPaginatedTransactions: (
+      page: number,
+      limit: number
+    ): Promise<EndpointMap["transaction.getPaginatedTransactions"]["response"]> => {
+      return ctx.request("transaction.getPaginatedTransactions", {
+        page,
+        limit,
+      });
+    },
+  };
+}
+
+export type TransactionResource = ReturnType<typeof transaction>;

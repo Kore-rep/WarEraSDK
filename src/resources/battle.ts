@@ -1,18 +1,23 @@
 // src/resources/battle.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the battle resource.
+ * Creates battle resource methods bound to the provided request context.
  */
-export const battle = {
-  getById: async (baseUrl: string, id: string) => {
-    return request('battle.getById', { id }, baseUrl);
-  },
-  getLiveBattleData: async (baseUrl: string) => {
-    return request('battle.getLiveBattleData', {}, baseUrl);
-  },
-  getBattles: async (baseUrl: string) => {
-    return request('battle.getBattles', {}, baseUrl);
-  },
-};
+export function battle(ctx: RequestContext) {
+  return {
+    getById: (id: string): Promise<EndpointMap["battle.getById"]["response"]> => {
+      return ctx.request("battle.getById", { id });
+    },
+    getLiveBattleData: (): Promise<EndpointMap["battle.getLiveBattleData"]["response"]> => {
+      return ctx.request("battle.getLiveBattleData", {});
+    },
+    getBattles: (): Promise<EndpointMap["battle.getBattles"]["response"]> => {
+      return ctx.request("battle.getBattles", {});
+    },
+  };
+}
+
+export type BattleResource = ReturnType<typeof battle>;

@@ -1,6 +1,5 @@
-import { CacheProvider } from "cache/cacheProvider";
-import { APIClient, ResourceWrapper } from "./DTOs/api.dto";
-import { requestContext } from "./request";
+import { APIClient } from "./DTOs/api.dto";
+import { RequestContext } from "./request";
 import { article } from "./resources/article";
 import { battle } from "./resources/battle";
 import { battleRanking } from "./resources/battleRanking";
@@ -10,6 +9,7 @@ import { gameConfig } from "./resources/gameConfig";
 import { government } from "./resources/government";
 import { itemOffer } from "./resources/itemOffer";
 import { itemTrading } from "./resources/itemTrading";
+import { message } from "./resources/message";
 import { mu } from "./resources/mu";
 import { ranking } from "./resources/ranking";
 import { region } from "./resources/region";
@@ -21,83 +21,67 @@ import { upgrade } from "./resources/upgrade";
 import { user } from "./resources/user";
 import { workOffer } from "./resources/workOffer";
 import { APIConfig } from "./types";
-import { CacheManager } from "./cache/cacheManager";
+import { createCacheProvider } from "./cache/cacheManager";
 
 const DEFAULT_BASE_URL = "https://api.example.com"; // TODO: Replace with actual API URL
 
-type ResourceMethods = Record<
-  string,
-  (baseUrl: string, ...args: never[]) => Promise<unknown>
->;
-
-export function createAPI(
-  config: APIConfig = {},
-  customCacheProvider?: CacheProvider | null
-): APIClient {
+/**
+ * Creates a new API client instance with its own isolated request context.
+ * Each client instance is independent and does not share state with other instances.
+ *
+ * @param config - API configuration options including cache, rate limiting, etc.
+ * @returns A fully configured API client
+ */
+export function createAPI(config: APIConfig = {}): APIClient {
   const baseUrl = config.baseUrl || DEFAULT_BASE_URL;
   const batchMode = config.batch || false;
 
-  // Init cache
-  const cache = CacheManager.getCache(customCacheProvider);
+  // Create cache provider for this client instance
+  const cache = createCacheProvider(config.cache);
 
-  // Set up the request context
-  requestContext.setBatchMode(batchMode);
-  requestContext.setBaseUrl(baseUrl);
-  requestContext.setCache(cache);
-
-  // Create resource wrappers that bind baseUrl to each function
-  const createResourceWrapper = <T extends ResourceMethods>(
-    resource: T
-  ): ResourceWrapper<T> => {
-    const wrapper = {} as ResourceWrapper<T>;
-    for (const [key, fn] of Object.entries(resource)) {
-      if (typeof fn === "function") {
-        (wrapper as Record<string, (...args: unknown[]) => Promise<unknown>>)[
-          key
-        ] = (...args: unknown[]) =>
-          (fn as (baseUrl: string, ...args: unknown[]) => Promise<unknown>)(
-            baseUrl,
-            ...args
-          );
-      }
-    }
-    return wrapper;
-  };
+  // Create a new request context for this client instance
+  const ctx = new RequestContext({
+    baseUrl,
+    batchMode,
+    cache,
+    rateLimit: config.rateLimit,
+  });
 
   return {
-    company: createResourceWrapper(company),
-    country: createResourceWrapper(country),
-    government: createResourceWrapper(government),
-    region: createResourceWrapper(region),
-    battle: createResourceWrapper(battle),
-    round: createResourceWrapper(round),
-    battleRanking: createResourceWrapper(battleRanking),
-    itemTrading: createResourceWrapper(itemTrading),
-    tradingOrder: createResourceWrapper(tradingOrder),
-    itemOffer: createResourceWrapper(itemOffer),
-    workOffer: createResourceWrapper(workOffer),
-    ranking: createResourceWrapper(ranking),
-    search: createResourceWrapper(search),
-    gameConfig: createResourceWrapper(gameConfig),
-    user: createResourceWrapper(user),
-    article: createResourceWrapper(article),
-    mu: createResourceWrapper(mu),
-    transaction: createResourceWrapper(transaction),
-    upgrade: createResourceWrapper(upgrade),
+    company: company(ctx),
+    country: country(ctx),
+    government: government(ctx),
+    region: region(ctx),
+    battle: battle(ctx),
+    round: round(ctx),
+    battleRanking: battleRanking(ctx),
+    itemTrading: itemTrading(ctx),
+    tradingOrder: tradingOrder(ctx),
+    itemOffer: itemOffer(ctx),
+    workOffer: workOffer(ctx),
+    ranking: ranking(ctx),
+    search: search(ctx),
+    gameConfig: gameConfig(ctx),
+    user: user(ctx),
+    article: article(ctx),
+    message: message(ctx),
+    mu: mu(ctx),
+    transaction: transaction(ctx),
+    upgrade: upgrade(ctx),
 
     /**
      * Execute all queued batch requests
      * @returns Promise resolving to an array of results
      */
     runBatch: async () => {
-      return requestContext.executeBatch();
+      return ctx.executeBatch();
     },
 
     /**
      * Clear the batch queue without executing
      */
     clearBatch: () => {
-      requestContext.clearQueue();
+      ctx.clearQueue();
     },
 
     /**
@@ -107,8 +91,17 @@ export function createAPI(
       endpointName: string,
       params: Record<string, unknown>
     ) => {
-      const key = requestContext.getCacheKey(endpointName, params);
-      return requestContext.invalidateCacheKey(key);
+      const key = ctx.getCacheKey(endpointName, params);
+      return ctx.invalidateCacheKey(key);
+    },
+
+    /**
+     * Get current rate limit status.
+     * Returns null if rate limiting is not enabled.
+     */
+    getRateLimitStatus: () => {
+      const limiter = ctx.getRateLimiter();
+      return limiter ? limiter.getStatus() : null;
     },
   };
 }

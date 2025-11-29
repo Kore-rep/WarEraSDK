@@ -1,18 +1,28 @@
 // src/resources/workOffer.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the work offer resource.
+ * Creates work offer resource methods bound to the provided request context.
  */
-export const workOffer = {
-  getById: async (baseUrl: string, id: string) => {
-    return request('workOffer.getById', { id }, baseUrl);
-  },
-  getWorkOfferByCompanyId: async (baseUrl: string, companyId: string) => {
-    return request('workOffer.getWorkOfferByCompanyId', { companyId }, baseUrl);
-  },
-  getWorkOffersPaginated: async (baseUrl: string, page: number, limit: number) => {
-    return request('workOffer.getWorkOffersPaginated', { page, limit }, baseUrl);
-  },
-};
+export function workOffer(ctx: RequestContext) {
+  return {
+    getById: (id: string): Promise<EndpointMap["workOffer.getById"]["response"]> => {
+      return ctx.request("workOffer.getById", { id });
+    },
+    getWorkOfferByCompanyId: (
+      companyId: string
+    ): Promise<EndpointMap["workOffer.getWorkOfferByCompanyId"]["response"]> => {
+      return ctx.request("workOffer.getWorkOfferByCompanyId", { companyId });
+    },
+    getWorkOffersPaginated: (
+      page: number,
+      limit: number
+    ): Promise<EndpointMap["workOffer.getWorkOffersPaginated"]["response"]> => {
+      return ctx.request("workOffer.getWorkOffersPaginated", { page, limit });
+    },
+  };
+}
+
+export type WorkOfferResource = ReturnType<typeof workOffer>;

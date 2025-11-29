@@ -3,23 +3,50 @@ import { CacheProvider } from "./cacheProvider";
 import { createCache } from "cache-manager";
 import { NullCache } from "./nullCache";
 
+/**
+ * Creates a cache provider instance based on the provided configuration.
+ * 
+ * @param customCache - Optional custom cache provider:
+ *   - If `null`, returns a NullCache (no-op cache)
+ *   - If a CacheProvider instance, returns that instance
+ *   - If `undefined`, creates and returns an in-memory cache
+ * @returns A CacheProvider instance
+ */
+export function createCacheProvider(customCache?: CacheProvider | null): CacheProvider {
+  if (customCache === null) {
+    return new NullCache();
+  }
+
+  if (customCache) {
+    return customCache;
+  }
+
+  const memoryCache = createCache();
+  return new CacheManagerAdapter(memoryCache);
+}
+
+/**
+ * @deprecated Use createCacheProvider() instead. This class uses a singleton pattern
+ * that can cause issues when multiple API clients are created.
+ */
 export class CacheManager {
   private static instance: CacheProvider | null = null;
 
   /**
-   * Creates a singleton instance of the cache, either an in-memory cache or a wrapper on top of whatever custom cache is provided.
-   * @param customCache An optional Custom provider that the cache will use.
-   * @returns A singleton CacheProvider instance
+   * @deprecated Use createCacheProvider() instead.
+   * Creates a singleton instance of the cache.
    */
   static getCache(customCache?: CacheProvider | null): CacheProvider {
-    // Return existing instance if already initialized
     if (this.instance) {
       return this.instance;
     }
     return this.setCache(customCache);
   }
-  // TODO: This is terrible, when request context singleton pattern is fixed, fix this
-  static setCache(customCache?: CacheProvider | null) {
+
+  /**
+   * @deprecated Use createCacheProvider() instead.
+   */
+  static setCache(customCache?: CacheProvider | null): CacheProvider {
     if (customCache === null) {
       this.instance = new NullCache();
       return this.instance;

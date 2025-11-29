@@ -10,7 +10,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "test-harness": "node -r ts-node/register src/test_harness.ts"
   },
   "keywords": [],
   "author": "",

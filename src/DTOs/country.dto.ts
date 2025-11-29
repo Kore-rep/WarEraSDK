@@ -49,7 +49,7 @@ export interface GetAllCountriesResponse {
 /**
  * Response for country.getCountryById endpoint
  */
-export interface GetCountrybyIDResponse {
+export interface GetCountryByIDResponse {
     result: {
         data: CountryDto;       // single country
     }

@@ -1,15 +1,20 @@
 // src/resources/gameConfig.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the game configuration resource.
+ * Creates game configuration resource methods bound to the provided request context.
  */
-export const gameConfig = {
-  getDates: async (baseUrl: string) => {
-    return request('gameConfig.getDates', {}, baseUrl);
-  },
-  getGameConfig: async (baseUrl: string) => {
-    return request('gameConfig.getGameConfig', {}, baseUrl);
-  },
-};
+export function gameConfig(ctx: RequestContext) {
+  return {
+    getDates: (): Promise<EndpointMap["gameConfig.getDates"]["response"]> => {
+      return ctx.request("gameConfig.getDates", {});
+    },
+    getGameConfig: (): Promise<EndpointMap["gameConfig.getGameConfig"]["response"]> => {
+      return ctx.request("gameConfig.getGameConfig", {});
+    },
+  };
+}
+
+export type GameConfigResource = ReturnType<typeof gameConfig>;

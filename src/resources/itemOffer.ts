@@ -1,12 +1,17 @@
 // src/resources/itemOffer.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the item offer resource.
+ * Creates item offer resource methods bound to the provided request context.
  */
-export const itemOffer = {
-  getById: async (baseUrl: string, id: string) => {
-    return request('itemOffer.getById', { id }, baseUrl);
-  },
-};
+export function itemOffer(ctx: RequestContext) {
+  return {
+    getById: (id: string): Promise<EndpointMap["itemOffer.getById"]["response"]> => {
+      return ctx.request("itemOffer.getById", { id });
+    },
+  };
+}
+
+export type ItemOfferResource = ReturnType<typeof itemOffer>;

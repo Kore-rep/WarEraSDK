@@ -1,12 +1,17 @@
 // src/resources/ranking.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the ranking resource.
+ * Creates ranking resource methods bound to the provided request context.
  */
-export const ranking = {
-  getRanking: async (baseUrl: string) => {
-    return request('ranking.getRanking', {}, baseUrl);
-  },
-};
+export function ranking(ctx: RequestContext) {
+  return {
+    getRanking: async (): Promise<EndpointMap["ranking.getRanking"]["response"]> => {
+      return await ctx.request("ranking.getRanking", {});
+    },
+  };
+}
+
+export type RankingResource = ReturnType<typeof ranking>;

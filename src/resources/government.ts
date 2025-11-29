@@ -1,12 +1,17 @@
 // src/resources/government.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the government resource.
+ * Creates government resource methods bound to the provided request context.
  */
-export const government = {
-  getByCountryId: async (baseUrl: string, countryId: string) => {
-    return request('government.getByCountryId', { countryId }, baseUrl);
-  },
-};
+export function government(ctx: RequestContext) {
+  return {
+    getByCountryId: (countryId: string): Promise<EndpointMap["government.getByCountryId"]["response"]> => {
+      return ctx.request("government.getByCountryId", { countryId });
+    },
+  };
+}
+
+export type GovernmentResource = ReturnType<typeof government>;

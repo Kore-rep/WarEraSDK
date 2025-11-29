@@ -1,15 +1,20 @@
 // src/resources/round.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the round resource.
+ * Creates round resource methods bound to the provided request context.
  */
-export const round = {
-  getById: async (baseUrl: string, id: string) => {
-    return request('round.getById', { id }, baseUrl);
-  },
-  getLastHits: async (baseUrl: string) => {
-    return request('round.getLastHits', {}, baseUrl);
-  },
-};
+export function round(ctx: RequestContext) {
+  return {
+    getById: (id: string): Promise<EndpointMap["round.getById"]["response"]> => {
+      return ctx.request("round.getById", { id });
+    },
+    getLastHits: (): Promise<EndpointMap["round.getLastHits"]["response"]> => {
+      return ctx.request("round.getLastHits", {});
+    },
+  };
+}
+
+export type RoundResource = ReturnType<typeof round>;

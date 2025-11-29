@@ -1,55 +1,48 @@
-import type { article } from "../resources/article";
-import type { battle } from "../resources/battle";
-import type { battleRanking } from "../resources/battleRanking";
-import type { company } from "../resources/company";
-import type { country } from "../resources/country";
-import type { gameConfig } from "../resources/gameConfig";
-import type { government } from "../resources/government";
-import type { itemOffer } from "../resources/itemOffer";
-import type { itemTrading } from "../resources/itemTrading";
-import type { mu } from "../resources/mu";
-import type { ranking } from "../resources/ranking";
-import type { region } from "../resources/region";
-import type { round } from "../resources/round";
-import type { search } from "../resources/search";
-import type { tradingOrder } from "../resources/tradingOrder";
-import type { transaction } from "../resources/transaction";
-import type { upgrade } from "../resources/upgrade";
-import type { user } from "../resources/user";
-import type { workOffer } from "../resources/workOffer";
-
-/**
- * Resource wrapper type - removes the baseUrl parameter from all methods
- */
-export type ResourceWrapper<T> = {
-  [K in keyof T]: T[K] extends (baseUrl: string, ...args: infer P) => infer R
-    ? (...args: P) => R
-    : never;
-};
+import type { ArticleResource } from "../resources/article";
+import type { BattleResource } from "../resources/battle";
+import type { BattleRankingResource } from "../resources/battleRanking";
+import type { CompanyResource } from "../resources/company";
+import type { CountryResource } from "../resources/country";
+import type { GameConfigResource } from "../resources/gameConfig";
+import type { GovernmentResource } from "../resources/government";
+import type { ItemOfferResource } from "../resources/itemOffer";
+import type { ItemTradingResource } from "../resources/itemTrading";
+import type { MessageResource } from "../resources/message";
+import type { MuResource } from "../resources/mu";
+import type { RankingResource } from "../resources/ranking";
+import type { RegionResource } from "../resources/region";
+import type { RoundResource } from "../resources/round";
+import type { SearchResource } from "../resources/search";
+import type { TradingOrderResource } from "../resources/tradingOrder";
+import type { TransactionResource } from "../resources/transaction";
+import type { UpgradeResource } from "../resources/upgrade";
+import type { UserResource } from "../resources/user";
+import type { WorkOfferResource } from "../resources/workOffer";
 
 /**
  * API Client interface - represents the complete API client with all resources
  */
 export interface APIClient {
-  company: ResourceWrapper<typeof company>;
-  country: ResourceWrapper<typeof country>;
-  government: ResourceWrapper<typeof government>;
-  region: ResourceWrapper<typeof region>;
-  battle: ResourceWrapper<typeof battle>;
-  round: ResourceWrapper<typeof round>;
-  battleRanking: ResourceWrapper<typeof battleRanking>;
-  itemTrading: ResourceWrapper<typeof itemTrading>;
-  tradingOrder: ResourceWrapper<typeof tradingOrder>;
-  itemOffer: ResourceWrapper<typeof itemOffer>;
-  workOffer: ResourceWrapper<typeof workOffer>;
-  ranking: ResourceWrapper<typeof ranking>;
-  search: ResourceWrapper<typeof search>;
-  gameConfig: ResourceWrapper<typeof gameConfig>;
-  user: ResourceWrapper<typeof user>;
-  article: ResourceWrapper<typeof article>;
-  mu: ResourceWrapper<typeof mu>;
-  transaction: ResourceWrapper<typeof transaction>;
-  upgrade: ResourceWrapper<typeof upgrade>;
+  company: CompanyResource;
+  country: CountryResource;
+  government: GovernmentResource;
+  region: RegionResource;
+  battle: BattleResource;
+  round: RoundResource;
+  battleRanking: BattleRankingResource;
+  itemTrading: ItemTradingResource;
+  tradingOrder: TradingOrderResource;
+  itemOffer: ItemOfferResource;
+  workOffer: WorkOfferResource;
+  ranking: RankingResource;
+  search: SearchResource;
+  gameConfig: GameConfigResource;
+  user: UserResource;
+  article: ArticleResource;
+  message: MessageResource;
+  mu: MuResource;
+  transaction: TransactionResource;
+  upgrade: UpgradeResource;
 
   /**
    * Execute all queued batch requests
@@ -62,8 +55,23 @@ export interface APIClient {
    */
   clearBatch: () => void;
 
+  /**
+   * Invalidate a specific cache key
+   */
   invalidateCache: (
     endpointName: string,
     params: Record<string, unknown>
   ) => Promise<void>;
+
+  /**
+   * Get current rate limit status.
+   * Returns null if rate limiting is not enabled.
+   */
+  getRateLimitStatus: () => {
+    requestCount: number;
+    maxRequests: number;
+    usagePercent: number;
+    isAtLimit: boolean;
+    currentBackoffMs: number;
+  } | null;
 }

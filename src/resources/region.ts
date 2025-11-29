@@ -1,22 +1,30 @@
 // src/resources/region.ts
-import { GetRegionbyIdResponse, RegionGetRegionsObjectResponse } from '../DTOs/regions.dto';
-import { request } from '../request';
+import {
+  GetRegionByIdResponse,
+  RegionGetRegionsObjectResponse,
+} from "../DTOs/regions.dto";
+import { RequestContext } from "../request";
 
 export interface getRegionByIdParams {
   regionid: string;
 }
-/**
- * Functions related to the region resource.
- */
-export const region = {
-  getById: async (baseUrl: string, regionid: string):Promise<GetRegionbyIdResponse>=> {
-    return request('region.getById', { regionid }, baseUrl);
-  },
 
-  /**
-* Warning: This function is very expensive, please use very sparingly.
-*/
-  getRegionsObject: async (baseUrl: string):Promise<RegionGetRegionsObjectResponse> => {
-    return request('region.getRegionsObject', {}, baseUrl);
-  },
-};
+/**
+ * Creates region resource methods bound to the provided request context.
+ */
+export function region(ctx: RequestContext) {
+  return {
+    getById: (regionid: string): Promise<GetRegionByIdResponse> => {
+      return ctx.request("region.getById", { regionid });
+    },
+
+    /**
+     * Warning: This function is very expensive, please use very sparingly.
+     */
+    getRegionsObject: (): Promise<RegionGetRegionsObjectResponse> => {
+      return ctx.request("region.getRegionsObject", {});
+    },
+  };
+}
+
+export type RegionResource = ReturnType<typeof region>;

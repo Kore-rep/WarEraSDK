@@ -1,12 +1,17 @@
 // src/resources/tradingOrder.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the trading order resource.
+ * Creates trading order resource methods bound to the provided request context.
  */
-export const tradingOrder = {
-  getTopOrders: async (baseUrl: string) => {
-    return request('tradingOrder.getTopOrders', {}, baseUrl);
-  },
-};
+export function tradingOrder(ctx: RequestContext) {
+  return {
+    getTopOrders: (): Promise<EndpointMap["tradingOrder.getTopOrders"]["response"]> => {
+      return ctx.request("tradingOrder.getTopOrders", {});
+    },
+  };
+}
+
+export type TradingOrderResource = ReturnType<typeof tradingOrder>;

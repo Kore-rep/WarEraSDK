@@ -1,15 +1,20 @@
 // src/resources/mu.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the military unit (mu) resource.
+ * Creates military unit (mu) resource methods bound to the provided request context.
  */
-export const mu = {
-  getById: async (baseUrl: string, id: string) => {
-    return request('mu.getById', { id }, baseUrl);
-  },
-  getManyPaginated: async (baseUrl: string, page: number, limit: number) => {
-    return request('mu.getManyPaginated', { page, limit }, baseUrl);
-  },
-};
+export function mu(ctx: RequestContext) {
+  return {
+    getById: (id: string): Promise<EndpointMap["mu.getById"]["response"]> => {
+      return ctx.request("mu.getById", { id });
+    },
+    getManyPaginated: (page: number, limit: number): Promise<EndpointMap["mu.getManyPaginated"]["response"]> => {
+      return ctx.request("mu.getManyPaginated", { page, limit });
+    },
+  };
+}
+
+export type MuResource = ReturnType<typeof mu>;

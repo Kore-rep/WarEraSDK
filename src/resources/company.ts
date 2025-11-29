@@ -1,6 +1,8 @@
-import { GetCompaniesResponse, GetCompanyByIdResponse } from '../DTOs/company.dto';
-import { request } from '../request';
-
+import {
+  GetCompaniesResponse,
+  GetCompanyByIdResponse,
+} from "../DTOs/company.dto";
+import { RequestContext } from "../request";
 
 export interface getCompanyByIdParams {
   id: string;
@@ -20,39 +22,39 @@ export interface GetCompaniesParams {
    * Warning: This parameter has not been tested yet.
    */
   cursor?: string;
-  direction?: 'forward' | 'backward';
+  direction?: "forward" | "backward";
 }
 
+/**
+ * Creates company resource methods bound to the provided request context.
+ */
+export function company(ctx: RequestContext) {
+  return {
+    /**
+     * Get a company by ID
+     *
+     * @param params - The company ID params
+     * @returns Company data
+     */
+    getById: (params: getCompanyByIdParams): Promise<GetCompanyByIdResponse> => {
+      return ctx.request("company.getById", params);
+    },
 
-export const company = {
+    /**
+     * Get companies list
+     *
+     * @param params - Query parameters
+     * @param params.userId - User ID (mandatory)
+     * @param params.orgId - Organization ID (optional)
+     * @param params.perPage - Number of items per page (default: 12)
+     * @param params.cursor - Cursor for pagination (optional)
+     * @param params.direction - Direction for pagination (default: 'forward')
+     * @returns List of companies
+     */
+    getCompanies: (params: GetCompaniesParams): Promise<GetCompaniesResponse> => {
+      return ctx.request("company.getCompanies", params);
+    },
+  };
+}
 
-  /**
-   * Get a company by ID
-   * 
-   * @param baseUrl - The base URL for the API
-   * @param id - The company ID
-   * @returns Company data
-   */
-  getById: async (baseUrl: string, params: getCompanyByIdParams): Promise<GetCompanyByIdResponse> => {
-    return request('company.getById', params, baseUrl);
-  },
-
-  /**
-   * Get companies list
-   * 
-   * @param baseUrl - The base URL for the API
-   * @param params - Query parameters
-   * @param params.userId - User ID (mandatory)
-   * @param params.orgId - Organization ID (optional)
-   * @param params.perPage - Number of items per page (default: 12)
-   * @param params.cursor - Cursor for pagination (optional)
-   * @param params.direction - Direction for pagination (default: 'forward')
-   * @returns List of companies
-   */
-  getCompanies: async (
-    baseUrl: string,
-    params: GetCompaniesParams
-  ): Promise<GetCompaniesResponse> => {
-    return request('company.getCompanies', params, baseUrl);
-  },
-};
+export type CompanyResource = ReturnType<typeof company>;

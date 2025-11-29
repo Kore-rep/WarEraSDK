@@ -1,12 +1,17 @@
 // src/resources/search.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the search resource.
+ * Creates search resource methods bound to the provided request context.
  */
-export const search = {
-  searchAnything: async (baseUrl: string, query: string) => {
-    return request('search.searchAnything', { query }, baseUrl);
-  },
-};
+export function search(ctx: RequestContext) {
+  return {
+    searchAnything: (query: string): Promise<EndpointMap["search.searchAnything"]["response"]> => {
+      return ctx.request("search.searchAnything", { query });
+    },
+  };
+}
+
+export type SearchResource = ReturnType<typeof search>;

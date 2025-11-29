@@ -1,20 +1,18 @@
 import { GetUserLiteResponse, UsersByCountryResponseDto } from "DTOs/user.dto";
-import { request } from "../request";
+import { RequestContext } from "../request";
 
 /**
- * Functions related to the user resource.
+ * Creates user resource methods bound to the provided request context.
  */
-export const user = {
-  getUserLite: async (
-    baseUrl: string,
-    id: string
-  ): Promise<GetUserLiteResponse> => {
-    return request("user.getUserLite", { userId: id }, baseUrl);
-  },
-  getUsersByCountry: async (
-    baseUrl: string,
-    countryId: string
-  ): Promise<UsersByCountryResponseDto> => {
-    return request("user.getUsersByCountry", { countryId }, baseUrl);
-  },
-};
+export function user(ctx: RequestContext) {
+  return {
+    getUserLite: (id: string): Promise<GetUserLiteResponse> => {
+      return ctx.request("user.getUserLite", { userId: id });
+    },
+    getUsersByCountry: (countryId: string): Promise<UsersByCountryResponseDto> => {
+      return ctx.request("user.getUsersByCountry", { countryId });
+    },
+  };
+}
+
+export type UserResource = ReturnType<typeof user>;

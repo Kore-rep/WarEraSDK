@@ -1,12 +1,23 @@
 // src/resources/upgrade.ts
 
-import { request } from '../request';
+import { RequestContext } from "../request";
+import { EndpointMap } from "../types";
 
 /**
- * Functions related to the upgrade resource.
+ * Creates upgrade resource methods bound to the provided request context.
  */
-export const upgrade = {
-  getUpgradeByTypeAndEntity: async (baseUrl: string, type: string, entityId: string) => {
-    return request('upgrade.getUpgradeByTypeAndEntity', { type, entityId }, baseUrl);
-  },
-};
+export function upgrade(ctx: RequestContext) {
+  return {
+    getUpgradeByTypeAndEntity: (
+      type: string,
+      entityId: string
+    ): Promise<EndpointMap["upgrade.getUpgradeByTypeAndEntity"]["response"]> => {
+      return ctx.request("upgrade.getUpgradeByTypeAndEntity", {
+        type,
+        entityId,
+      });
+    },
+  };
+}
+
+export type UpgradeResource = ReturnType<typeof upgrade>;
