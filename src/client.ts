@@ -7,6 +7,7 @@ import { company } from "./resources/company";
 import { country } from "./resources/country";
 import { gameConfig } from "./resources/gameConfig";
 import { government } from "./resources/government";
+import { inventoryAccount } from "./resources/inventoryAccount";
 import { itemOffer } from "./resources/itemOffer";
 import { itemTrading } from "./resources/itemTrading";
 import { message } from "./resources/message";
@@ -68,6 +69,7 @@ export function createAPI(config: APIConfig = {}): APIClient {
     mu: mu(ctx),
     transaction: transaction(ctx),
     upgrade: upgrade(ctx),
+    inventoryAccount: inventoryAccount(ctx),
 
     /**
      * Execute all queued batch requests

@@ -5,6 +5,7 @@ import type { CompanyResource } from "../resources/company";
 import type { CountryResource } from "../resources/country";
 import type { GameConfigResource } from "../resources/gameConfig";
 import type { GovernmentResource } from "../resources/government";
+import type { InventoryAccountResource } from "../resources/inventoryAccount";
 import type { ItemOfferResource } from "../resources/itemOffer";
 import type { ItemTradingResource } from "../resources/itemTrading";
 import type { MessageResource } from "../resources/message";
@@ -43,6 +44,7 @@ export interface APIClient {
   mu: MuResource;
   transaction: TransactionResource;
   upgrade: UpgradeResource;
+  inventoryAccount: InventoryAccountResource;
 
   /**
    * Execute all queued batch requests

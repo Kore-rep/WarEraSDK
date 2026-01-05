@@ -1,4 +1,4 @@
-import { GetUserLiteResponse, UsersByCountryResponseDto } from "DTOs/user.dto";
+import { GetUserLiteResponse, UsersByCountryResponseDto } from "../DTOs/user.dto";
 import { RequestContext } from "../request";
 
 /**

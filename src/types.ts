@@ -3,17 +3,19 @@
 import {
   GetUserLiteResponse,
   UsersByCountryResponseDto,
-} from "DTOs/user.dto";
+} from "./DTOs/user.dto";
 import {
   getArticleByIdParams,
   getArticlesPaginatedParams,
-} from "resources/article";
-import { GetCompaniesParams, getCompanyByIdParams } from "resources/company";
-import { GetMessagesByArticleIdParams } from "resources/message";
+} from "./resources/article";
+import { GetCompaniesParams, getCompanyByIdParams } from "./resources/company";
+import { GetMessagesByArticleIdParams } from "./resources/message";
+import { GetBattlesParams } from "./resources/battle";
 import {
   GetArticleByIdResponse,
   GetArticlesPaginatedResponse,
 } from "./DTOs/article.dto";
+import { GetBattlesResponse } from "./DTOs/battle.dto";
 import {
   GetCompaniesResponse,
   GetCompanyByIdResponse,
@@ -27,7 +29,16 @@ import {
   RegionGetRegionsObjectResponse,
   GetRegionByIdResponse,
 } from "./DTOs/regions.dto";
-import { getRegionByIdParams } from "resources/region";
+import { getRegionByIdParams } from "./resources/region";
+import {
+  GetPaginatedTransactionsParams,
+  GetPaginatedTransactionsResponse,
+} from "./DTOs/transaction.dto";
+import {
+  GetInventoryAccountsParams,
+  GetInventoryAccountsResponse,
+} from "./DTOs/inventoryAccount.dto";
+import { GetGovernmentByCountryIdResponse } from "./DTOs/government.dto";
 import { RateLimitConfig } from "./rateLimit";
 import { CacheProvider } from "./cache/cacheProvider";
 
@@ -96,7 +107,7 @@ export type EndpointMap = {
   };
   "government.getByCountryId": {
     params: { countryId: string };
-    response: Record<string, unknown>;
+    response: GetGovernmentByCountryIdResponse;
   };
   "region.getById": {
     params: getRegionByIdParams;
@@ -115,10 +126,13 @@ export type EndpointMap = {
     response: Record<string, unknown>;
   };
   "battle.getBattles": {
-    params: Record<string, never>;
-    response: Record<string, unknown>[];
+    params: GetBattlesParams;
+    response: GetBattlesResponse;
   };
-  "round.getById": { params: { id: string }; response: Record<string, unknown> };
+  "round.getById": {
+    params: { id: string };
+    response: Record<string, unknown>;
+  };
   "round.getLastHits": {
     params: Record<string, never>;
     response: Record<string, unknown>[];
@@ -193,12 +207,16 @@ export type EndpointMap = {
     response: Record<string, unknown>[];
   };
   "transaction.getPaginatedTransactions": {
-    params: { page: number; limit: number };
-    response: Record<string, unknown>[];
+    params: GetPaginatedTransactionsParams;
+    response: GetPaginatedTransactionsResponse;
   };
   "upgrade.getUpgradeByTypeAndEntity": {
     params: { type: string; entityId: string };
     response: Record<string, unknown>;
+  };
+  "inventoryAccount.getInventoryAccounts": {
+    params: GetInventoryAccountsParams;
+    response: GetInventoryAccountsResponse;
   };
 };
 

@@ -1,21 +1,25 @@
 // src/resources/transaction.ts
 
 import { RequestContext } from "../request";
-import { EndpointMap } from "../types";
+import {
+  GetPaginatedTransactionsParams,
+  GetPaginatedTransactionsResponse,
+} from "../DTOs/transaction.dto";
 
 /**
  * Creates transaction resource methods bound to the provided request context.
  */
 export function transaction(ctx: RequestContext) {
   return {
+    /**
+     * Get paginated transactions for a country
+     * @param params - Query parameters including countryId, limit, cursor, direction
+     * @returns Paginated transaction results with cursor for next page
+     */
     getPaginatedTransactions: (
-      page: number,
-      limit: number
-    ): Promise<EndpointMap["transaction.getPaginatedTransactions"]["response"]> => {
-      return ctx.request("transaction.getPaginatedTransactions", {
-        page,
-        limit,
-      });
+      params: GetPaginatedTransactionsParams
+    ): Promise<GetPaginatedTransactionsResponse> => {
+      return ctx.request("transaction.getPaginatedTransactions", params);
     },
   };
 }

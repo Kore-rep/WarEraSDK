@@ -1,36 +1,79 @@
 {
-  "name": "api-project",
+  "name": "warera-sdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "TypeScript SDK for the WarEra game API with caching, batching, and rate limiting support",
   "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "build": "tsc",
-    "start": "node dist/index.js",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "test-harness": "node -r ts-node/register src/test_harness.ts"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "test-harness": "ts-node src/test_harness.ts"
   },
-  "keywords": [],
+  "keywords": [
+    "warera",
+    "sdk",
+    "api",
+    "game",
+    "typescript",
+    "client",
+    "http",
+    "rest",
+    "cache",
+    "rate-limit",
+    "batching"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cache-manager": "^7.2.5"
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/axios": "0.14.4",
     "@types/jest": "^29.5.14",
+    "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
-    "axios": "^1.13.2",
     "eslint": "^9.39.1",
     "jest": "^29.7.0",
+    "rimraf": "^5.0.10",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.3"
   },
-  "dependencies": {
-    "cache-manager": "^7.2.5"
-  }
+  "sideEffects": false
 }

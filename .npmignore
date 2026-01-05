@@ -1,0 +1,41 @@
+# Source files
+src/
+
+# Test files
+test/
+**/*.test.ts
+**/__tests__/
+jest.config.js
+coverage/
+
+# Development files
+.eslintrc*
+eslint.config.mjs
+tsconfig.json
+tsconfig.build.json
+.editorconfig
+.prettierrc*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Misc
+*.log
+npm-debug.log*
+.env*
+node_modules/
+
+# Test harness
+src/test_harness.ts
+

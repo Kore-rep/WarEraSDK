@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2020",
     "module": "commonjs",
+    "lib": ["ES2020"],
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
@@ -11,12 +12,20 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "./",
+    "rootDir": "src",
+    "baseUrl": "src",
     "paths": {
-      "*": ["src/*"]
+      "DTOs/*": ["DTOs/*"],
+      "resources/*": ["resources/*"],
+      "cache/*": ["cache/*"],
+      "rateLimit/*": ["rateLimit/*"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__/**"]
 }

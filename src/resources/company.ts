@@ -5,23 +5,22 @@ import {
 import { RequestContext } from "../request";
 
 export interface getCompanyByIdParams {
-  id: string;
+  companyId: string;
 }
 
 /**
  * Parameters for company.getCompanies endpoint
  */
 export interface GetCompaniesParams {
-  userId: string;
-  /**
-   * Warning: This parameter has not been tested yet.
-   */
+  /** Filter by user ID. If omitted, returns all companies. */
+  userId?: string;
+  /** Filter by organization ID */
   orgId?: string;
+  /** Number of items per page (max: 100, default: 12) */
   perPage?: number;
-  /**
-   * Warning: This parameter has not been tested yet.
-   */
+  /** Cursor for pagination (use nextCursor/prevCursor from response) */
   cursor?: string;
+  /** Pagination direction */
   direction?: "forward" | "backward";
 }
 
@@ -41,18 +40,18 @@ export function company(ctx: RequestContext) {
     },
 
     /**
-     * Get companies list
+     * Get companies list (paginated)
      *
-     * @param params - Query parameters
-     * @param params.userId - User ID (mandatory)
-     * @param params.orgId - Organization ID (optional)
-     * @param params.perPage - Number of items per page (default: 12)
-     * @param params.cursor - Cursor for pagination (optional)
-     * @param params.direction - Direction for pagination (default: 'forward')
-     * @returns List of companies
+     * @param params - Query parameters (all optional)
+     * @param params.userId - Filter by user ID. If omitted, returns all companies.
+     * @param params.orgId - Filter by organization ID
+     * @param params.perPage - Number of items per page (max: 100, default: 12)
+     * @param params.cursor - Cursor for pagination (use nextCursor from response)
+     * @param params.direction - Pagination direction (default: 'forward')
+     * @returns Paginated list of company IDs with cursor info
      */
-    getCompanies: (params: GetCompaniesParams): Promise<GetCompaniesResponse> => {
-      return ctx.request("company.getCompanies", params);
+    getCompanies: (params?: GetCompaniesParams): Promise<GetCompaniesResponse> => {
+      return ctx.request("company.getCompanies", params || {});
     },
   };
 }

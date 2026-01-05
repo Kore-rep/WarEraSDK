@@ -36,12 +36,15 @@ export interface GetCompanyByIdResponse {
 }
 
 /**
- * Response for company.getCompanies endpoint (TBA - To Be Added)
+ * Response for company.getCompanies endpoint
+ * Returns a paginated list of company IDs
  */
 export interface GetCompaniesResponse {
   result: {
     data: {
-      items: string[]; // Returns company IDs
+      items: string[];
+      nextCursor: string | null;
+      prevCursor: string | null;
     };
   };
 }
