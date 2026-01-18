@@ -46,6 +46,7 @@ export function createAPI(config: APIConfig = {}): APIClient {
     batchMode,
     cache,
     rateLimit: config.rateLimit,
+    apiKey: config.apiKey,
   });
 
   return {

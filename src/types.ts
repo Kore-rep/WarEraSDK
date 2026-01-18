@@ -73,6 +73,11 @@ export interface APIConfig {
    * Pass an object with rate limit options to enable.
    */
   rateLimit?: Partial<RateLimitConfig>;
+  /**
+   * Optional API key for authentication.
+   * If provided, will be sent with every request as the X-API-Key header.
+   */
+  apiKey?: string;
 }
 
 /**

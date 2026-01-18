@@ -27,6 +27,7 @@ export interface RequestContextOptions {
   batchMode?: boolean;
   cache?: CacheProvider | null;
   rateLimit?: Partial<RateLimitConfig>;
+  apiKey?: string;
 }
 
 /**
@@ -39,6 +40,7 @@ export class RequestContext {
   private baseUrl: string;
   private cache: CacheProvider | null;
   private rateLimiter: RateLimiter | null;
+  private apiKey: string | undefined;
 
   constructor(options: RequestContextOptions) {
     this.baseUrl = options.baseUrl;
@@ -47,6 +49,7 @@ export class RequestContext {
     this.rateLimiter = options.rateLimit
       ? new RateLimiter(options.rateLimit)
       : null;
+    this.apiKey = options.apiKey;
   }
 
   setBatchMode(enabled: boolean): void {
@@ -153,6 +156,7 @@ export class RequestContext {
           input: JSON.stringify(reducedInputObj),
           batch: 1,
         },
+        headers: this.apiKey ? { "X-API-Key": this.apiKey } : undefined,
       } as AxiosRequestConfig);
 
       const fetchedResults = Array.isArray(response.data)
@@ -274,6 +278,7 @@ export class RequestContext {
           params: {
             input: JSON.stringify(params),
           },
+          headers: this.apiKey ? { "X-API-Key": this.apiKey } : undefined,
         } as AxiosRequestConfig);
 
         // Cache the response

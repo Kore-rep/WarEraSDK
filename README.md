@@ -32,6 +32,9 @@ const api = createAPI({
   // Base URL for API requests
   baseUrl: 'https://api.warera.io/trpc',
   
+  // Optional API key for authentication (sent as X-API-Key header)
+  apiKey: 'your-api-key',
+  
   // Enable batch mode for grouping requests
   batch: false,
   
@@ -55,6 +58,20 @@ const api = createAPI({
 ```
 
 ## Features
+
+### API Key Authentication
+
+If your API requires authentication, you can provide an API key that will be sent with every request as the `X-API-Key` header:
+
+```typescript
+const api = createAPI({
+  baseUrl: 'https://api.warera.io/trpc',
+  apiKey: process.env.WARERA_API_KEY,
+});
+
+// All requests will now include the X-API-Key header
+const user = await api.user.getUserLite('userId123');
+```
 
 ### Caching
 
