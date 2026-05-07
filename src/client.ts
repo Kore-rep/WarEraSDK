@@ -10,7 +10,10 @@ import { government } from "./resources/government";
 import { inventoryAccount } from "./resources/inventoryAccount";
 import { itemOffer } from "./resources/itemOffer";
 import { itemTrading } from "./resources/itemTrading";
+import { laws } from "./resources/laws";
+import { mercenaryContractAuction } from "./resources/mercenaryContractAuction";
 import { message } from "./resources/message";
+import { party } from "./resources/party";
 import { mu } from "./resources/mu";
 import { ranking } from "./resources/ranking";
 import { region } from "./resources/region";
@@ -23,6 +26,8 @@ import { user } from "./resources/user";
 import { workOffer } from "./resources/workOffer";
 import { APIConfig } from "./types";
 import { createCacheProvider } from "./cache/cacheManager";
+import { createRateLimiter, RateLimiterProvider } from "./rateLimit";
+import { RateLimitConfig } from "./rateLimit/rateLimitConfig";
 
 const DEFAULT_BASE_URL = "https://api.example.com"; // TODO: Replace with actual API URL
 
@@ -40,23 +45,31 @@ export function createAPI(config: APIConfig = {}): APIClient {
   // Create cache provider for this client instance
   const cache = createCacheProvider(config.cache);
 
+  // Create rate limiter - use custom provider if provided, otherwise use config
+  const customRateLimiter: RateLimiterProvider | null | undefined = config.rateLimiter;
+  const rateLimitConfig: Partial<RateLimitConfig> | undefined = config.rateLimitConfig;
+  const rateLimiter = createRateLimiter(customRateLimiter, rateLimitConfig);
+
   // Create a new request context for this client instance
   const ctx = new RequestContext({
     baseUrl,
     batchMode,
     cache,
-    rateLimit: config.rateLimit,
+    rateLimiter,
     apiKey: config.apiKey,
   });
 
   return {
     company: company(ctx),
     country: country(ctx),
+    party: party(ctx),
     government: government(ctx),
+    laws: laws(ctx),
     region: region(ctx),
     battle: battle(ctx),
     round: round(ctx),
     battleRanking: battleRanking(ctx),
+    mercenaryContractAuction: mercenaryContractAuction(ctx),
     itemTrading: itemTrading(ctx),
     tradingOrder: tradingOrder(ctx),
     itemOffer: itemOffer(ctx),
@@ -73,11 +86,13 @@ export function createAPI(config: APIConfig = {}): APIClient {
     inventoryAccount: inventoryAccount(ctx),
 
     /**
-     * Execute all queued batch requests
-     * @returns Promise resolving to an array of results
+     * Execute all queued batch requests. Each queued call resolves or rejects on its own;
+     * a successful HTTP batch with per-procedure errors does not fail the whole batch.
+     * @param ttl - Optional TTL in milliseconds for caching batch results
+     * @returns Array aligned with enqueue order; entries may be empty where a call rejected
      */
-    runBatch: async () => {
-      return ctx.executeBatch();
+    runBatch: async (ttl?: number) => {
+      return ctx.executeBatch(ttl);
     },
 
     /**

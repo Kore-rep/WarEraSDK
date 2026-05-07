@@ -75,6 +75,7 @@ export interface RegionDTO {
   __v: number;
   activeUpgradeLevels?: RegionActiveUpgradeLevelsDTO;
   resistance: number;
+  resistanceMax: number;
   strategicResource?: StrategicResourceListDTO;
   deposit?: RegionDepositDTO;
 }

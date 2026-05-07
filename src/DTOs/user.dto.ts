@@ -76,8 +76,14 @@ export interface UserDTO {
         userPremiumMonths: RankingEntryDTO;
         userPremiumGifts: RankingEntryDTO;
     };
+    buffs: {
+      debuffEndAt?: string;
+      debuffCodes?: string[]; // cocain is pill
+      buffEndAt?: string;
+      buffCodes?: string[]; // cocain is pill
   
     };
+  };
 
 /**
  * Response for user.getUserLite endpoint
@@ -89,8 +95,17 @@ export interface GetUserLiteResponse {
 }
 
 /**
+ * Parameters for user.getUsersByCountry
+ */
+export interface GetUsersByCountryParams {
+  countryId: string;
+  cursor?: string;
+  limit?: number;
+}
+
+/**
  *A single user entry returned from getUsersByCountry
- */ 
+ */
 
 export interface UserByCountryItemDto {
   _id: string;

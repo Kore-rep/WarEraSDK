@@ -16,6 +16,8 @@ export { NullCache } from "./cache/nullCache";
 // Rate limiting
 export type { RateLimitConfig } from "./rateLimit/rateLimitConfig";
 export { RateLimiter, RateLimitError } from "./rateLimit/rateLimiter";
+export type { RateLimiterProvider } from "./rateLimit/rateLimiterProvider";
+export { createRateLimiter } from "./rateLimit";
 
 // Errors
 export { ApiError } from "./request";
@@ -24,13 +26,21 @@ export { ApiError } from "./request";
 export type { ArticleResource } from "./resources/article";
 export type { BattleResource } from "./resources/battle";
 export type { BattleRankingResource } from "./resources/battleRanking";
+export type {
+  BattleRankingEntryDTO,
+  GetBattleRankingParams,
+  GetBattleRankingResponse,
+} from "./DTOs/battleRanking.dto";
 export type { CompanyResource } from "./resources/company";
 export type { CountryResource } from "./resources/country";
 export type { GameConfigResource } from "./resources/gameConfig";
 export type { GovernmentResource } from "./resources/government";
+export type { LawsResource } from "./resources/laws";
+export type { MercenaryContractAuctionResource } from "./resources/mercenaryContractAuction";
 export type { ItemOfferResource } from "./resources/itemOffer";
 export type { ItemTradingResource } from "./resources/itemTrading";
 export type { MessageResource } from "./resources/message";
+export type { PartyResource } from "./resources/party";
 export type { MuResource } from "./resources/mu";
 export type { RankingResource } from "./resources/ranking";
 export type { RegionResource } from "./resources/region";
@@ -55,6 +65,7 @@ export type {
   GetCountryByIDResponse,
   GetAllCountriesResponse,
 } from "./DTOs/country.dto";
+export type { GetPartyByIdResponse, PartyDTO } from "./DTOs/party.dto";
 export type { GetMessagesByArticleIdResponse } from "./DTOs/message.dto";
 export type {
   GetRegionByIdResponse,
@@ -62,6 +73,7 @@ export type {
 } from "./DTOs/regions.dto";
 export type {
   GetUserLiteResponse,
+  GetUsersByCountryParams,
   UsersByCountryResponseDto,
 } from "./DTOs/user.dto";
 export type {
@@ -81,11 +93,30 @@ export type {
   GovernmentDTO,
   GetGovernmentByCountryIdResponse,
 } from "./DTOs/government.dto";
+export type {
+  LawDTO,
+  LawDataDTO,
+  GetPaginatedLawsParams,
+  GetPaginatedLawsResponse,
+} from "./DTOs/laws.dto";
+export type {
+  BunkerUpgradeDTO,
+  GetUpgradeByTypeAndEntityResponse,
+} from "./DTOs/upgrade.dto";
+export type {
+  BidDTO,
+  MercenaryContractAuctionDTO,
+  GetPaginatedAuctionsParams,
+  GetPaginatedAuctionsDataDTO,
+  GetPaginatedAuctionsResponse,
+} from "./DTOs/mercenaryContractAuction.dto";
 
 // Request options (for per-request cache configuration)
 export type { CountryRequestOptions } from "./resources/country";
+export type { PartyRequestOptions } from "./resources/party";
 export type { RegionRequestOptions } from "./resources/region";
 export type { BattleRequestOptions, GetBattlesParams } from "./resources/battle";
+export type { MercenaryContractAuctionRequestOptions } from "./resources/mercenaryContractAuction";
 
 // Parameter types
 export type {

@@ -48,6 +48,9 @@ export class RateLimiter {
    * Get current usage as a percentage (0-1)
    */
   getUsageRatio(): number {
+    if (this.config.maxRequests === 0) {
+      return this.getRequestCount() > 0 ? Infinity : 0;
+    }
     return this.getRequestCount() / this.config.maxRequests;
   }
 

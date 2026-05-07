@@ -13,8 +13,8 @@ export function upgrade(ctx: RequestContext) {
       entityId: string
     ): Promise<EndpointMap["upgrade.getUpgradeByTypeAndEntity"]["response"]> => {
       return ctx.request("upgrade.getUpgradeByTypeAndEntity", {
-        type,
-        entityId,
+        upgradeType: type,
+        regionId: entityId,
       });
     },
   };

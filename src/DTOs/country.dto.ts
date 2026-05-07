@@ -37,6 +37,7 @@ export interface CountryDto {
     currentBattleOrder: string[]; 
     updatedAt: string;          // ISO timestamp
     enemy: string[];              // country ID 
+    rulingParty: string; // Party ID
 }
 /**
  * Response for country.getAllCountries endpoint

@@ -171,7 +171,7 @@ async function testRateLimiting() {
   const api = createAPI({
     baseUrl: "https://api2.warera.io/trpc",
     cache: null, // Disable caching to ensure real requests
-    rateLimit: {
+    rateLimitConfig: {
       maxRequests: 5,
       windowMs: 10000, // 10 seconds
       backoffThreshold: 0.4, // Start backing off at 40% (2 requests)

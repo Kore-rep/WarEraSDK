@@ -2,6 +2,7 @@
 
 import {
   GetUserLiteResponse,
+  GetUsersByCountryParams,
   UsersByCountryResponseDto,
 } from "./DTOs/user.dto";
 import {
@@ -39,7 +40,21 @@ import {
   GetInventoryAccountsResponse,
 } from "./DTOs/inventoryAccount.dto";
 import { GetGovernmentByCountryIdResponse } from "./DTOs/government.dto";
-import { RateLimitConfig } from "./rateLimit";
+import {
+  GetPaginatedLawsParams,
+  GetPaginatedLawsResponse,
+} from "./DTOs/laws.dto";
+import { GetUpgradeByTypeAndEntityResponse } from "./DTOs/upgrade.dto";
+import { GetPartyByIdResponse } from "./DTOs/party.dto";
+import {
+  GetBattleRankingParams,
+  GetBattleRankingResponse,
+} from "./DTOs/battleRanking.dto";
+import {
+  GetPaginatedAuctionsParams,
+  GetPaginatedAuctionsResponse,
+} from "./DTOs/mercenaryContractAuction.dto";
+import { RateLimitConfig, RateLimiterProvider } from "./rateLimit";
 import { CacheProvider } from "./cache/cacheProvider";
 
 /*
@@ -68,11 +83,20 @@ export interface APIConfig {
    */
   cacheTTL?: number;
   /**
-   * Rate limiting configuration.
-   * If not provided, no rate limiting is applied.
-   * Pass an object with rate limit options to enable.
+   * Custom rate limiter provider implementation.
+   * If provided, this will be used instead of creating a built-in rate limiter.
+   * - `undefined` (default): Use rateLimitConfig if provided, otherwise no rate limiting
+   * - `null`: Explicitly disable rate limiting (overrides rateLimitConfig)
+   * - `RateLimiterProvider`: Use custom rate limiter implementation
    */
-  rateLimit?: Partial<RateLimitConfig>;
+  rateLimiter?: RateLimiterProvider | null;
+  /**
+   * Rate limiting configuration for built-in rate limiter.
+   * Only used if rateLimiter is not provided.
+   * - `undefined` (default): No rate limiting
+   * - `Partial<RateLimitConfig>`: Use built-in rate limiter with provided config
+   */
+  rateLimitConfig?: Partial<RateLimitConfig>;
   /**
    * Optional API key for authentication.
    * If provided, will be sent with every request as the X-API-Key header.
@@ -88,6 +112,8 @@ export interface QueuedCall<T = unknown> {
   params: Record<string, unknown>;
   resolve: (value: T) => void;
   reject: (reason?: Error) => void;
+  /** Optional TTL in milliseconds for caching this specific request */
+  ttl?: number;
 }
 
 /**
@@ -110,9 +136,17 @@ export type EndpointMap = {
     params: Record<string, never>;
     response: GetAllCountriesResponse;
   };
+  "party.getById": {
+    params: { partyId: string };
+    response: GetPartyByIdResponse;
+  };
   "government.getByCountryId": {
     params: { countryId: string };
     response: GetGovernmentByCountryIdResponse;
+  };
+  "law.getPaginatedLaws": {
+    params: GetPaginatedLawsParams;
+    response: GetPaginatedLawsResponse;
   };
   "region.getById": {
     params: getRegionByIdParams;
@@ -143,8 +177,8 @@ export type EndpointMap = {
     response: Record<string, unknown>[];
   };
   "battleRanking.getRanking": {
-    params: Record<string, never>;
-    response: Record<string, unknown>;
+    params: GetBattleRankingParams;
+    response: GetBattleRankingResponse;
   };
   "itemTrading.getPrices": {
     params: Record<string, never>;
@@ -191,7 +225,7 @@ export type EndpointMap = {
     response: GetUserLiteResponse;
   };
   "user.getUsersByCountry": {
-    params: { countryId: string };
+    params: GetUsersByCountryParams;
     response: UsersByCountryResponseDto;
   };
   "article.getArticleById": {
@@ -216,12 +250,16 @@ export type EndpointMap = {
     response: GetPaginatedTransactionsResponse;
   };
   "upgrade.getUpgradeByTypeAndEntity": {
-    params: { type: string; entityId: string };
-    response: Record<string, unknown>;
+    params: { upgradeType: string; regionId: string };
+    response: GetUpgradeByTypeAndEntityResponse;
   };
   "inventoryAccount.getInventoryAccounts": {
     params: GetInventoryAccountsParams;
     response: GetInventoryAccountsResponse;
+  };
+  "mercenaryContractAuction.getPaginatedAuctions": {
+    params: GetPaginatedAuctionsParams;
+    response: GetPaginatedAuctionsResponse;
   };
 };
 

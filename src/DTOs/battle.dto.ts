@@ -78,6 +78,7 @@ export interface BattleSideDTO {
   muOrders: string[];
   damages: number;
   hitCount: number;
+  bountyEffectiveAt?: string;
   moneyPer1kDamages?: number;
   moneyPool?: number;
 }

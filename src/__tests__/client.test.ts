@@ -13,12 +13,12 @@ describe("createAPI", () => {
       const mockResponse = { id: "1234", name: "Test Company" };
       mockedAxios.get.mockResolvedValueOnce({ data: mockResponse });
 
-      const result = await api.company.getById({ id: "1234" });
+      const result = await api.company.getById({ companyId: "1234" });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${baseUrl}/company.getById`,
         expect.objectContaining({
-          params: { input: JSON.stringify({ id: "1234" }) },
+          params: { input: JSON.stringify({ companyId: "1234" }) },
         })
       );
       expect(result).toEqual(mockResponse);

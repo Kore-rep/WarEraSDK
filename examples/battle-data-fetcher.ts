@@ -53,7 +53,12 @@ async function main() {
 
   // Fetch battle rankings
   console.log("4️⃣  Fetching battle rankings...");
-  const rankings = await api.battleRanking.getRanking();
+  const rankings = await api.battleRanking.getRanking({
+    roundId: "69e4b80310ea2fde23111a08",
+    dataType: "damage",
+    type: "user",
+    side: "attacker",
+  });
   console.log(`   ✓ Fetched battle rankings\n`);
 
   // Compile all data

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { EndpointMap, EndpointName, QueuedCall } from "./types";
 import { CacheProvider } from "./cache/cacheProvider";
 import { CacheConfig, defaultCacheConfig } from "./cache/cacheConfig";
-import { RateLimiter, RateLimitConfig } from "./rateLimit";
+import { RateLimiterProvider } from "./rateLimit";
 
 /**
  * API Error class
@@ -20,13 +20,62 @@ export class ApiError extends Error {
 }
 
 /**
+ * Build ApiError from an axios-style caught error
+ */
+function apiErrorFromCaught(error: unknown): ApiError {
+  const e = error as {
+    message: string;
+    response?: { status: number; data: unknown };
+  };
+  return new ApiError(
+    e.message,
+    e.response?.status,
+    e.response?.data
+  );
+}
+
+/**
+ * Parse a single procedure result from a tRPC-style HTTP batch array item.
+ * Success responses include `result`; failures include `error`.
+ */
+function apiErrorFromBatchProcedureError(item: unknown): ApiError | null {
+  if (item === null || typeof item !== "object") {
+    return null;
+  }
+  const o = item as Record<string, unknown>;
+  if (!("error" in o) || o.error === null || o.error === undefined) {
+    return null;
+  }
+  const err = o.error as Record<string, unknown>;
+  const nested =
+    err.json !== null &&
+    err.json !== undefined &&
+    typeof err.json === "object"
+      ? (err.json as Record<string, unknown>)
+      : err;
+  const message =
+    (typeof nested.message === "string" && nested.message) ||
+    (typeof err.message === "string" && err.message) ||
+    "Request failed";
+  let httpStatus: number | undefined;
+  const data = nested.data ?? err.data;
+  if (data !== null && data !== undefined && typeof data === "object") {
+    const hs = (data as { httpStatus?: unknown }).httpStatus;
+    if (typeof hs === "number") {
+      httpStatus = hs;
+    }
+  }
+  return new ApiError(message, httpStatus, o.error);
+}
+
+/**
  * Request context configuration options
  */
 export interface RequestContextOptions {
   baseUrl: string;
   batchMode?: boolean;
   cache?: CacheProvider | null;
-  rateLimit?: Partial<RateLimitConfig>;
+  rateLimiter?: RateLimiterProvider | null;
   apiKey?: string;
 }
 
@@ -39,16 +88,14 @@ export class RequestContext {
   private queue: QueuedCall<unknown>[] = [];
   private baseUrl: string;
   private cache: CacheProvider | null;
-  private rateLimiter: RateLimiter | null;
+  private rateLimiter: RateLimiterProvider | null;
   private apiKey: string | undefined;
 
   constructor(options: RequestContextOptions) {
     this.baseUrl = options.baseUrl;
     this.batchMode = options.batchMode ?? false;
     this.cache = options.cache ?? null;
-    this.rateLimiter = options.rateLimit
-      ? new RateLimiter(options.rateLimit)
-      : null;
+    this.rateLimiter = options.rateLimiter ?? null;
     this.apiKey = options.apiKey;
   }
 
@@ -76,28 +123,39 @@ export class RequestContext {
     this.cache = cache;
   }
 
-  getRateLimiter(): RateLimiter | null {
+  getRateLimiter(): RateLimiterProvider | null {
     return this.rateLimiter;
   }
 
-  queueCall<T>(name: string, params: Record<string, unknown>): Promise<T> {
+  queueCall<T>(name: string, params: Record<string, unknown>, ttl?: number): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.queue.push({
         name,
         params,
         resolve: resolve as (value: unknown) => void,
         reject,
+        ttl,
       });
     });
   }
 
-  async executeBatch(): Promise<unknown[]> {
+  /**
+   * Flush the batch queue. Per-call promises resolve or reject independently:
+   * tRPC batch items with an `error` field reject with {@link ApiError}; successes resolve.
+   * If the batch HTTP request fails, cached entries still resolve; only uncached calls reject.
+   * The returned array aligns with the queue order; failed procedure slots may be empty.
+   */
+  async executeBatch(ttl?: number): Promise<unknown[]> {
     if (this.queue.length === 0) {
       return [];
     }
 
+    const cacheTTL = ttl ?? defaultCacheConfig.ttl!;
+    const results: unknown[] = new Array(this.queue.length);
+    /** Queue indices that still need a network batch (set after cache pre-check) */
+    let indicesNeedingNetwork: number[] = [];
+
     try {
-      const results: unknown[] = new Array(this.queue.length);
       const missingIndexes: number[] = [];
       const missingFunctionNames: string[] = [];
       const missingInput: Record<string, unknown>[] = [];
@@ -128,6 +186,8 @@ export class RequestContext {
           missingInput.push(call.params);
         });
       }
+
+      indicesNeedingNetwork = [...missingIndexes];
 
       // 2. If everything was cached, return immediately
       if (missingIndexes.length === 0) {
@@ -163,47 +223,79 @@ export class RequestContext {
         ? response.data
         : [response.data];
 
-      // 5. Merge fetched results back into the global results array
+      // 5. Merge fetched results; each item may be a tRPC success (`result`) or failure (`error`)
+      const rejections = new Map<number, ApiError>();
       missingIndexes.forEach((originalIndex, i) => {
-        results[originalIndex] = fetchedResults[i];
+        if (i >= fetchedResults.length) {
+          rejections.set(
+            originalIndex,
+            new ApiError(
+              "Batch response length does not match batch request",
+              undefined,
+              {
+                expectedAtLeast: i + 1,
+                received: fetchedResults.length,
+              }
+            )
+          );
+          return;
+        }
+        const item = fetchedResults[i];
+        const procErr = apiErrorFromBatchProcedureError(item);
+        if (procErr) {
+          rejections.set(originalIndex, procErr);
+          return;
+        }
+        results[originalIndex] = item;
       });
 
-      // 6. Cache newly fetched results
+      // 6. Cache only successful fetched results
       if (this.cache) {
         await Promise.all(
           missingIndexes.map(async (originalIndex, i) => {
+            if (rejections.has(originalIndex) || i >= fetchedResults.length) {
+              return;
+            }
             const call = this.queue[originalIndex];
             const cacheKey = this.getCacheKey(call.name, call.params);
+            const callTTL = call.ttl ?? cacheTTL;
             await this.cache!.set(
               cacheKey,
-              fetchedResults[i],
-              defaultCacheConfig.ttl
+              results[originalIndex],
+              callTTL
             );
           })
         );
       }
 
-      // 7. Resolve queued promises
+      // 7. Resolve or reject each queued promise individually
       this.queue.forEach((call, index) => {
-        call.resolve(results[index]);
+        const err = rejections.get(index);
+        if (err) {
+          call.reject(err);
+        } else {
+          call.resolve(results[index]);
+        }
       });
 
       this.queue = [];
       return results;
     } catch (error) {
-      const apiError = error as {
-        message: string;
-        response?: { status: number; data: unknown };
-      };
+      const errorObj = apiErrorFromCaught(error);
 
-      const errorObj = new ApiError(
-        apiError.message,
-        apiError.response?.status,
-        apiError.response?.data
-      );
+      if (indicesNeedingNetwork.length > 0) {
+        const needNet = new Set(indicesNeedingNetwork);
+        this.queue.forEach((call, index) => {
+          if (needNet.has(index)) {
+            call.reject(errorObj);
+          } else {
+            call.resolve(results[index]);
+          }
+        });
+      } else {
+        this.queue.forEach((call) => call.reject(errorObj));
+      }
 
-      // Reject all queued calls
-      this.queue.forEach((call) => call.reject(errorObj));
       this.queue = [];
 
       throw errorObj;
@@ -244,7 +336,7 @@ export class RequestContext {
 
     const config = cacheConfig || defaultCacheConfig;
     const shouldCache = cache && config.enabled !== false;
-    const ttl = config.ttl ?? defaultCacheConfig.ttl;
+    const ttl = config.ttl ?? defaultCacheConfig.ttl!;
 
     // Generate cache key
     const cacheKey = shouldCache
@@ -260,10 +352,11 @@ export class RequestContext {
     }
 
     if (this.batchMode) {
-      // Queue the call and return a promise
+      // Queue the call and return a promise, preserving the TTL for when the batch is executed
       return this.queueCall<EndpointMap[K]["response"]>(
         endpointName,
-        params as Record<string, unknown>
+        params as Record<string, unknown>,
+        ttl
       );
     } else {
       // Apply rate limiting before making the request
@@ -288,15 +381,7 @@ export class RequestContext {
 
         return response.data;
       } catch (error) {
-        const apiError = error as {
-          message: string;
-          response?: { status: number; data: unknown };
-        };
-        throw new ApiError(
-          apiError.message,
-          apiError.response?.status,
-          apiError.response?.data
-        );
+        throw apiErrorFromCaught(error);
       }
     }
   }

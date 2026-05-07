@@ -1,4 +1,8 @@
-import { GetUserLiteResponse, UsersByCountryResponseDto } from "../DTOs/user.dto";
+import {
+  GetUserLiteResponse,
+  GetUsersByCountryParams,
+  UsersByCountryResponseDto,
+} from "../DTOs/user.dto";
 import { RequestContext } from "../request";
 
 /**
@@ -9,8 +13,10 @@ export function user(ctx: RequestContext) {
     getUserLite: (id: string): Promise<GetUserLiteResponse> => {
       return ctx.request("user.getUserLite", { userId: id });
     },
-    getUsersByCountry: (countryId: string): Promise<UsersByCountryResponseDto> => {
-      return ctx.request("user.getUsersByCountry", { countryId });
+    getUsersByCountry: (
+      params: GetUsersByCountryParams
+    ): Promise<UsersByCountryResponseDto> => {
+      return ctx.request("user.getUsersByCountry", params);
     },
   };
 }

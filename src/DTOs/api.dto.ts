@@ -8,7 +8,10 @@ import type { GovernmentResource } from "../resources/government";
 import type { InventoryAccountResource } from "../resources/inventoryAccount";
 import type { ItemOfferResource } from "../resources/itemOffer";
 import type { ItemTradingResource } from "../resources/itemTrading";
+import type { LawsResource } from "../resources/laws";
+import type { MercenaryContractAuctionResource } from "../resources/mercenaryContractAuction";
 import type { MessageResource } from "../resources/message";
+import type { PartyResource } from "../resources/party";
 import type { MuResource } from "../resources/mu";
 import type { RankingResource } from "../resources/ranking";
 import type { RegionResource } from "../resources/region";
@@ -26,11 +29,14 @@ import type { WorkOfferResource } from "../resources/workOffer";
 export interface APIClient {
   company: CompanyResource;
   country: CountryResource;
+  party: PartyResource;
   government: GovernmentResource;
+  laws: LawsResource;
   region: RegionResource;
   battle: BattleResource;
   round: RoundResource;
   battleRanking: BattleRankingResource;
+  mercenaryContractAuction: MercenaryContractAuctionResource;
   itemTrading: ItemTradingResource;
   tradingOrder: TradingOrderResource;
   itemOffer: ItemOfferResource;
@@ -47,10 +53,10 @@ export interface APIClient {
   inventoryAccount: InventoryAccountResource;
 
   /**
-   * Execute all queued batch requests
-   * @returns Promise resolving to an array of results
+   * Execute all queued batch requests. Each queued call resolves or rejects independently.
+   * @param ttl - Optional TTL in milliseconds for caching batch results
    */
-  runBatch: () => Promise<unknown[]>;
+  runBatch: (ttl?: number) => Promise<unknown[]>;
 
   /**
    * Clear the batch queue without executing

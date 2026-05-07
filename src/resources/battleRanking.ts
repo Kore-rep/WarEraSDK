@@ -1,15 +1,17 @@
 // src/resources/battleRanking.ts
 
+import { GetBattleRankingParams, GetBattleRankingResponse } from "../DTOs/battleRanking.dto";
 import { RequestContext } from "../request";
-import { EndpointMap } from "../types";
 
 /**
  * Creates battle ranking resource methods bound to the provided request context.
  */
 export function battleRanking(ctx: RequestContext) {
   return {
-    getRanking: async (): Promise<EndpointMap["battleRanking.getRanking"]["response"]> => {
-      return await ctx.request("battleRanking.getRanking", {});
+    getRanking: async (
+      params: GetBattleRankingParams
+    ): Promise<GetBattleRankingResponse> => {
+      return await ctx.request("battleRanking.getRanking", params);
     },
   };
 }
