@@ -66,6 +66,7 @@ export type {
   GetAllCountriesResponse,
 } from "./DTOs/country.dto";
 export type { GetPartyByIdResponse, PartyDTO } from "./DTOs/party.dto";
+export type { GetMuByIdParams, GetMuByIdResponse, MuDTO } from "./DTOs/mu.dto";
 export type { GetMessagesByArticleIdResponse } from "./DTOs/message.dto";
 export type {
   GetRegionByIdResponse,

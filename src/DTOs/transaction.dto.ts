@@ -4,7 +4,7 @@
 export interface TransactionDTO {
   _id: string;
   money: number;
-  transactionType: "trading" | "donation" | "tax" | "work" | "other" | string;
+  transactionType: "trading" | "donation" | "tax" | "work" | "other" | "countryMoneyTransfer" | string;
   createdAt: string;
   updatedAt: string;
   __v?: number;

@@ -8,8 +8,8 @@ import { EndpointMap } from "../types";
  */
 export function mu(ctx: RequestContext) {
   return {
-    getById: (id: string): Promise<EndpointMap["mu.getById"]["response"]> => {
-      return ctx.request("mu.getById", { id });
+    getById: (muId: string): Promise<EndpointMap["mu.getById"]["response"]> => {
+      return ctx.request("mu.getById", { muId });
     },
     getManyPaginated: (page: number, limit: number): Promise<EndpointMap["mu.getManyPaginated"]["response"]> => {
       return ctx.request("mu.getManyPaginated", { page, limit });

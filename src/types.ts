@@ -46,6 +46,7 @@ import {
 } from "./DTOs/laws.dto";
 import { GetUpgradeByTypeAndEntityResponse } from "./DTOs/upgrade.dto";
 import { GetPartyByIdResponse } from "./DTOs/party.dto";
+import { GetMuByIdParams, GetMuByIdResponse } from "./DTOs/mu.dto";
 import {
   GetBattleRankingParams,
   GetBattleRankingResponse,
@@ -240,7 +241,7 @@ export type EndpointMap = {
     params: GetMessagesByArticleIdParams;
     response: GetMessagesByArticleIdResponse;
   };
-  "mu.getById": { params: { id: string }; response: Record<string, unknown> };
+  "mu.getById": { params: GetMuByIdParams; response: GetMuByIdResponse };
   "mu.getManyPaginated": {
     params: { page: number; limit: number };
     response: Record<string, unknown>[];

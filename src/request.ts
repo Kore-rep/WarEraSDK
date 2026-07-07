@@ -10,27 +10,31 @@ import { RateLimiterProvider } from "./rateLimit";
 export class ApiError extends Error {
   status?: number;
   details?: unknown;
+  url?: string;
 
-  constructor(message: string, status?: number, details?: unknown) {
+  constructor(message: string, status?: number, details?: unknown, url?: string) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.details = details;
+    this.url = url;
   }
 }
 
 /**
  * Build ApiError from an axios-style caught error
  */
-function apiErrorFromCaught(error: unknown): ApiError {
+function apiErrorFromCaught(error: unknown, url?: string): ApiError {
   const e = error as {
     message: string;
     response?: { status: number; data: unknown };
+    config?: { url?: string };
   };
   return new ApiError(
     e.message,
     e.response?.status,
-    e.response?.data
+    e.response?.data,
+    url ?? e.config?.url
   );
 }
 
@@ -209,9 +213,9 @@ export class RequestContext {
         reducedInputObj[i] = params;
       });
 
-      const url = `${this.baseUrl}/${batchFunctionNames}`;
+      const batchUrl = `${this.baseUrl}/${batchFunctionNames}`;
 
-      const response = await axios.get<unknown[]>(url, {
+      const response = await axios.get<unknown[]>(batchUrl, {
         params: {
           input: JSON.stringify(reducedInputObj),
           batch: 1,
@@ -243,6 +247,8 @@ export class RequestContext {
         const item = fetchedResults[i];
         const procErr = apiErrorFromBatchProcedureError(item);
         if (procErr) {
+          const call = this.queue[originalIndex];
+          procErr.url = `${this.baseUrl}/${call.name}`;
           rejections.set(originalIndex, procErr);
           return;
         }
@@ -281,7 +287,17 @@ export class RequestContext {
       this.queue = [];
       return results;
     } catch (error) {
-      const errorObj = apiErrorFromCaught(error);
+      const batchFunctionNames =
+        indicesNeedingNetwork.length > 0
+          ? indicesNeedingNetwork
+              .map((index) => this.queue[index]?.name)
+              .filter(Boolean)
+              .join(",")
+          : "";
+      const batchUrl = batchFunctionNames
+        ? `${this.baseUrl}/${batchFunctionNames}`
+        : undefined;
+      const errorObj = apiErrorFromCaught(error, batchUrl);
 
       if (indicesNeedingNetwork.length > 0) {
         const needNet = new Set(indicesNeedingNetwork);
@@ -365,9 +381,9 @@ export class RequestContext {
       }
 
       // Execute immediately
+      const requestUrl = `${this.baseUrl}/${endpointName}`;
       try {
-        const url = `${this.baseUrl}/${endpointName}`;
-        const response = await axios.get<EndpointMap[K]["response"]>(url, {
+        const response = await axios.get<EndpointMap[K]["response"]>(requestUrl, {
           params: {
             input: JSON.stringify(params),
           },
@@ -381,7 +397,7 @@ export class RequestContext {
 
         return response.data;
       } catch (error) {
-        throw apiErrorFromCaught(error);
+        throw apiErrorFromCaught(error, requestUrl);
       }
     }
   }
