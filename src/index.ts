@@ -26,11 +26,6 @@ export { ApiError } from "./request";
 export type { ArticleResource } from "./resources/article";
 export type { BattleResource } from "./resources/battle";
 export type { BattleRankingResource } from "./resources/battleRanking";
-export type {
-  BattleRankingEntryDTO,
-  GetBattleRankingParams,
-  GetBattleRankingResponse,
-} from "./DTOs/battleRanking.dto";
 export type { CompanyResource } from "./resources/company";
 export type { CountryResource } from "./resources/country";
 export type { GameConfigResource } from "./resources/gameConfig";
@@ -52,82 +47,33 @@ export type { UpgradeResource } from "./resources/upgrade";
 export type { UserResource } from "./resources/user";
 export type { WorkOfferResource } from "./resources/workOffer";
 
-// DTO types for consumers
-export type {
-  GetArticleByIdResponse,
-  GetArticlesPaginatedResponse,
-} from "./DTOs/article.dto";
-export type {
-  GetCompanyByIdResponse,
-  GetCompaniesResponse,
-} from "./DTOs/company.dto";
-export type {
-  GetCountryByIDResponse,
-  GetAllCountriesResponse,
-} from "./DTOs/country.dto";
-export type { GetPartyByIdResponse, PartyDTO } from "./DTOs/party.dto";
-export type { GetMuByIdParams, GetMuByIdResponse, MuDTO } from "./DTOs/mu.dto";
-export type { GetMessagesByArticleIdResponse } from "./DTOs/message.dto";
-export type {
-  GetRegionByIdResponse,
-  RegionGetRegionsObjectResponse,
-} from "./DTOs/regions.dto";
-export type {
-  GetUserLiteResponse,
-  GetUsersByCountryParams,
-  UsersByCountryResponseDto,
-} from "./DTOs/user.dto";
-export type {
-  TransactionDTO,
-  GetPaginatedTransactionsParams,
-  GetPaginatedTransactionsResponse,
-} from "./DTOs/transaction.dto";
-export type {
-  InventoryAccountDTO,
-  InventoryAccountSpendingDTO,
-  InventoryAccountIncomesDTO,
-  GetInventoryAccountsParams,
-  GetInventoryAccountsResponse,
-} from "./DTOs/inventoryAccount.dto";
-export type { InventoryAccountResource } from "./resources/inventoryAccount";
-export type {
-  GovernmentDTO,
-  GetGovernmentByCountryIdResponse,
-} from "./DTOs/government.dto";
-export type {
-  LawDTO,
-  LawDataDTO,
-  GetPaginatedLawsParams,
-  GetPaginatedLawsResponse,
-} from "./DTOs/laws.dto";
-export type {
-  BunkerUpgradeDTO,
-  GetUpgradeByTypeAndEntityResponse,
-} from "./DTOs/upgrade.dto";
-export type {
-  BidDTO,
-  MercenaryContractAuctionDTO,
-  GetPaginatedAuctionsParams,
-  GetPaginatedAuctionsDataDTO,
-  GetPaginatedAuctionsResponse,
-} from "./DTOs/mercenaryContractAuction.dto";
-
-// Request options (for per-request cache configuration)
-export type { CountryRequestOptions } from "./resources/country";
-export type { PartyRequestOptions } from "./resources/party";
-export type { RegionRequestOptions } from "./resources/region";
+// Request options and parameter types (defined alongside their resources)
+export type { getArticleByIdParams, getArticlesPaginatedParams } from "./resources/article";
 export type { BattleRequestOptions, GetBattlesParams } from "./resources/battle";
-export type { MercenaryContractAuctionRequestOptions } from "./resources/mercenaryContractAuction";
-
-// Parameter types
-export type {
-  getArticleByIdParams,
-  getArticlesPaginatedParams,
-} from "./resources/article";
-export type {
-  getCompanyByIdParams,
-  GetCompaniesParams,
-} from "./resources/company";
+export type { getCompanyByIdParams, GetCompaniesParams } from "./resources/company";
+export type { CountryRequestOptions } from "./resources/country";
 export type { GetMessagesByArticleIdParams } from "./resources/message";
-export type { getRegionByIdParams } from "./resources/region";
+export type { MercenaryContractAuctionRequestOptions } from "./resources/mercenaryContractAuction";
+export type { PartyRequestOptions } from "./resources/party";
+export type { RegionRequestOptions, getRegionByIdParams } from "./resources/region";
 
+// DTO types — every payload, response, and param interface the endpoints use.
+// Each DTO module is re-exported wholesale so new DTOs are exposed automatically;
+// APIClient lives in api.dto and is already exported above.
+export type * from "./DTOs/article.dto";
+export type * from "./DTOs/battle.dto";
+export type * from "./DTOs/battleRanking.dto";
+export type * from "./DTOs/company.dto";
+export type * from "./DTOs/constants.dto";
+export type * from "./DTOs/country.dto";
+export type * from "./DTOs/government.dto";
+export type * from "./DTOs/inventoryAccount.dto";
+export type * from "./DTOs/laws.dto";
+export type * from "./DTOs/mercenaryContractAuction.dto";
+export type * from "./DTOs/message.dto";
+export type * from "./DTOs/mu.dto";
+export type * from "./DTOs/party.dto";
+export type * from "./DTOs/regions.dto";
+export type * from "./DTOs/transaction.dto";
+export type * from "./DTOs/upgrade.dto";
+export type * from "./DTOs/user.dto";
