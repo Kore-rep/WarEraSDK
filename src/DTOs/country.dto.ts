@@ -55,3 +55,8 @@ export interface GetCountryByIDResponse {
         data: CountryDto;       // single country
     }
 }
+
+/** Consistent `DTO`-cased alias for {@link CountryDto}. */
+export type CountryDTO = CountryDto;
+/** Consistent-cased alias for {@link GetCountryByIDResponse}. */
+export type GetCountryByIdResponse = GetCountryByIDResponse;
