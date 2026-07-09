@@ -17,6 +17,15 @@ export interface CountryDto {
     code: CountryCode;          // e.g., "US", "FR" etc.
     money: number;
     taxes: CountryTaxesDTO;
+    dates: {
+        lastAllianceLeftAt: string; // ISO timestamp
+    };
+    unrest: {
+        bar: number;
+        barMax: number;
+        lastContributionAt: string; // ISO timestamp
+    };
+    defensivePacts: string[];   // country IDs
     orgs: string[];             // org IDs
     allies: string[];           // country IDs
     warsWith: string[];         // country IDs
@@ -30,14 +39,22 @@ export interface CountryDto {
         countryDevelopment: RankingEntryDTO;
         countryActivePopulation: RankingEntryDTO;
         countryWealth: RankingEntryDTO;
+        countryBounty: RankingEntryDTO;
         countryProductionBonus: RankingEntryDTO;
     };
     strategicResources: StrategicResourcesDTO;
     __v: number;                // unsure purpose
-    currentBattleOrder: string[]; 
+    currentBattleOrder?: string[];
     updatedAt: string;          // ISO timestamp
-    enemy: string[];              // country ID 
+    enemy?: string[];              // country ID
+    pinnedArticle?: string;     // article ID
+    nonAggressionUntil: Record<string, string>; // country ID -> ISO timestamp
+    coreDevelopment: number;
+    averageDevelopment: number;
+    currentDevelopment: number;
+    currentPopulation: number;
     rulingParty: string; // Party ID
+    discordUrl?: string;
 }
 /**
  * Response for country.getAllCountries endpoint

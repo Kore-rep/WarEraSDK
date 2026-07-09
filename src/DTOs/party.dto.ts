@@ -4,6 +4,7 @@ export interface EthicsDTO {
     isolationism: number;
     imperialism: number;
     industrialism: number;
+    unethical: boolean;
 }
 
 export interface PartyDTO {
