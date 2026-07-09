@@ -13,6 +13,7 @@ export interface MuLevelingDTO {
 export interface MuRankingsDTO {
   muWeeklyDamages: RankingEntryDTO;
   muBounty: RankingEntryDTO;
+  muReputation: RankingEntryDTO;
   muDamages: RankingEntryDTO;
   muTerrain: RankingEntryDTO;
   muWealth: RankingEntryDTO;
@@ -38,8 +39,9 @@ export interface MuDTO {
   activeUpgradeLevels: MuActiveUpgradeLevelsDTO;
   avatarUrl: string;
   rankings: MuRankingsDTO;
-  investedMoneyByUsers: Record<string, number>;
+  investedMoneyByUsers?: Record<string, number>;
   country: string;
+  lastCountryChangeAt: string; // ISO timestamp
 }
 
 export interface GetMuByIdParams {
