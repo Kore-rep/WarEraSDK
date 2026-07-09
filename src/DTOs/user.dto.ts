@@ -4,14 +4,17 @@ import { RankingEntryDTO } from './constants.dto';
  */
 export interface SkillStatDTO {
     level: number;
-    ammoPercent: number | null;
-    buffsPercent: number | null;
-    debuffsPercent: number | null;
+    ammoPercent?: number | null;
+    buffsPercent?: number | null;
+    debuffsPercent?: number | null;
+    militaryRankPercent?: number | null;
     value: number | null;
     weapon: number | null;
     equipment: number | null;
+    overflow: number | null;
     limited: number | null;
     total: number;
+    totalAfterSoftCap: number | null;
     currentBarValue?: number;
     hourlyBarRegen?: number;
 }
@@ -33,13 +36,14 @@ export interface UserDTO {
         lastCountryMessageCheckAt: string; // ISO date string
         lastGlobalMessageCheckAt: string; // ISO date string
         lastEventsCheckAt: string; // ISO date string
-        lastWorkOfferApplications: string; // ISO date string
+        lastWorkOfferApplications: string[]; // ISO date strings
         lastWorkAt: string; // ISO date string
         lastDailyRewardClaimedAt: string; // ISO date string
-        lastSkillsResetAt: string; // ISO date string
         lastHelpAskedAt: string; // ISO date string
+        lastHiresAt: string[]; // ISO date strings
+        lastCompanyJoinedAt: string; // ISO date string
         lastCitizenshipChangeAt: string; // ISO date string
-        lastTakingControlAt: string; // ISO date string
+        lastSkillsResetAt: string; // ISO date string
     };
     leveling: {
         level: number;
@@ -64,6 +68,10 @@ export interface UserDTO {
         precision: SkillStatDTO;
         dodge: SkillStatDTO;
         lootChance: SkillStatDTO;
+        management: SkillStatDTO;
+    };
+    stats: {
+        damagesCount: number;
     };
     rankings: {
         userDamages: RankingEntryDTO;
@@ -71,17 +79,33 @@ export interface UserDTO {
         userWealth: RankingEntryDTO;
         userLevel: RankingEntryDTO;
         userReferrals: RankingEntryDTO;
+        userSubscribers: RankingEntryDTO;
         userTerrain: RankingEntryDTO;
-        userSubscribers : RankingEntryDTO;
         userPremiumMonths: RankingEntryDTO;
-        userPremiumGifts: RankingEntryDTO;
+        userCasesOpened: RankingEntryDTO;
+        userBounty: RankingEntryDTO;
+        userSkinsOwned: RankingEntryDTO;
+    };
+    militaryRank: number;
+    infos: {
+      isPremium: boolean;
+      premiumMonthsCount: number;
+      colorScheme: string;
+      font: string;
+      description: string;
+      vicePresidentOf?: string;
+    };
+    equippedSkinKeys: {
+      rifle?: string;
+      helmet?: string;
+      tank?: string;
     };
     buffs: {
       debuffEndAt?: string;
       debuffCodes?: string[]; // cocain is pill
       buffEndAt?: string;
       buffCodes?: string[]; // cocain is pill
-  
+
     };
   };
 
