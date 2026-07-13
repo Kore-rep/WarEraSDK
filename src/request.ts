@@ -131,7 +131,12 @@ export class RequestContext {
     return this.rateLimiter;
   }
 
-  queueCall<T>(name: string, params: Record<string, unknown>, ttl?: number): Promise<T> {
+  queueCall<T>(
+    name: string,
+    params: Record<string, unknown>,
+    ttl?: number,
+    cacheEnabled?: boolean
+  ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.queue.push({
         name,
@@ -139,6 +144,7 @@ export class RequestContext {
         resolve: resolve as (value: unknown) => void,
         reject,
         ttl,
+        cacheEnabled,
       });
     });
   }
@@ -168,8 +174,12 @@ export class RequestContext {
       if (this.cache) {
         await Promise.all(
           this.queue.map(async (call, index) => {
-            const cacheKey = this.getCacheKey(call.name, call.params);
-            const cached = await this.cache!.get<unknown>(cacheKey);
+            const cached =
+              call.cacheEnabled === false
+                ? undefined
+                : await this.cache!.get<unknown>(
+                    this.getCacheKey(call.name, call.params)
+                  );
 
             if (cached !== undefined) {
               // Fill from cache
@@ -263,6 +273,9 @@ export class RequestContext {
               return;
             }
             const call = this.queue[originalIndex];
+            if (call.cacheEnabled === false) {
+              return;
+            }
             const cacheKey = this.getCacheKey(call.name, call.params);
             const callTTL = call.ttl ?? cacheTTL;
             await this.cache!.set(
@@ -372,7 +385,8 @@ export class RequestContext {
       return this.queueCall<EndpointMap[K]["response"]>(
         endpointName,
         params as Record<string, unknown>,
-        ttl
+        ttl,
+        config.enabled !== false
       );
     } else {
       // Apply rate limiting before making the request

@@ -2,6 +2,7 @@
 
 import { GetMessagesByArticleIdResponse } from "../DTOs/message.dto";
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 
 export interface GetMessagesByArticleIdParams {
   articleId: string;
@@ -15,9 +16,8 @@ export interface GetMessagesByArticleIdParams {
 export function message(ctx: RequestContext) {
   return {
     getMessagesByArticleId: (
-      params: GetMessagesByArticleIdParams
-    ): Promise<GetMessagesByArticleIdResponse> => {
-      return ctx.request("message.getMessagesByArticleId", params);
+      params: GetMessagesByArticleIdParams, options?: RequestOptions): Promise<GetMessagesByArticleIdResponse> => {
+      return ctx.request("message.getMessagesByArticleId", params, options?.cache);
     },
   };
 }

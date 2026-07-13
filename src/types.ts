@@ -115,6 +115,8 @@ export interface QueuedCall<T = unknown> {
   reject: (reason?: Error) => void;
   /** Optional TTL in milliseconds for caching this specific request */
   ttl?: number;
+  /** When false, skip the cache entirely for this call (no read, no write) */
+  cacheEnabled?: boolean;
 }
 
 /**
@@ -210,7 +212,7 @@ export type EndpointMap = {
     response: Record<string, unknown>[];
   };
   "search.searchAnything": {
-    params: { query: string };
+    params: { searchText: string };
     response: Record<string, unknown>[];
   };
   "gameConfig.getDates": {

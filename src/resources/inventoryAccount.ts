@@ -1,6 +1,7 @@
 // src/resources/inventoryAccount.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import {
   GetInventoryAccountsParams,
   GetInventoryAccountsResponse,
@@ -17,9 +18,8 @@ export function inventoryAccount(ctx: RequestContext) {
      * @returns Array of weekly inventory account records
      */
     getInventoryAccounts: (
-      params: GetInventoryAccountsParams
-    ): Promise<GetInventoryAccountsResponse> => {
-      return ctx.request("inventoryAccount.getInventoryAccounts", params);
+      params: GetInventoryAccountsParams, options?: RequestOptions): Promise<GetInventoryAccountsResponse> => {
+      return ctx.request("inventoryAccount.getInventoryAccounts", params, options?.cache);
     },
   };
 }

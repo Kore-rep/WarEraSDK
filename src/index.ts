@@ -21,6 +21,7 @@ export { createRateLimiter } from "./rateLimit";
 
 // Errors
 export { ApiError } from "./request";
+export type { RequestOptions } from "./requestOptions";
 
 // Resource types (for consumers who need them)
 export type { ArticleResource } from "./resources/article";

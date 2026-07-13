@@ -1,6 +1,7 @@
 // src/resources/workOffer.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,19 +9,17 @@ import { EndpointMap } from "../types";
  */
 export function workOffer(ctx: RequestContext) {
   return {
-    getById: (id: string): Promise<EndpointMap["workOffer.getById"]["response"]> => {
-      return ctx.request("workOffer.getById", { id });
+    getById: (id: string, options?: RequestOptions): Promise<EndpointMap["workOffer.getById"]["response"]> => {
+      return ctx.request("workOffer.getById", { id }, options?.cache);
     },
     getWorkOfferByCompanyId: (
-      companyId: string
-    ): Promise<EndpointMap["workOffer.getWorkOfferByCompanyId"]["response"]> => {
-      return ctx.request("workOffer.getWorkOfferByCompanyId", { companyId });
+      companyId: string, options?: RequestOptions): Promise<EndpointMap["workOffer.getWorkOfferByCompanyId"]["response"]> => {
+      return ctx.request("workOffer.getWorkOfferByCompanyId", { companyId }, options?.cache);
     },
     getWorkOffersPaginated: (
       page: number,
-      limit: number
-    ): Promise<EndpointMap["workOffer.getWorkOffersPaginated"]["response"]> => {
-      return ctx.request("workOffer.getWorkOffersPaginated", { page, limit });
+      limit: number, options?: RequestOptions): Promise<EndpointMap["workOffer.getWorkOffersPaginated"]["response"]> => {
+      return ctx.request("workOffer.getWorkOffersPaginated", { page, limit }, options?.cache);
     },
   };
 }

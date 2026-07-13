@@ -1,6 +1,7 @@
 // src/resources/transaction.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import {
   GetPaginatedTransactionsParams,
   GetPaginatedTransactionsResponse,
@@ -17,9 +18,8 @@ export function transaction(ctx: RequestContext) {
      * @returns Paginated transaction results with cursor for next page
      */
     getPaginatedTransactions: (
-      params: GetPaginatedTransactionsParams
-    ): Promise<GetPaginatedTransactionsResponse> => {
-      return ctx.request("transaction.getPaginatedTransactions", params);
+      params: GetPaginatedTransactionsParams, options?: RequestOptions): Promise<GetPaginatedTransactionsResponse> => {
+      return ctx.request("transaction.getPaginatedTransactions", params, options?.cache);
     },
   };
 }

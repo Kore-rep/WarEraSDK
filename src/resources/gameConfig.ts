@@ -1,6 +1,7 @@
 // src/resources/gameConfig.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,11 +9,11 @@ import { EndpointMap } from "../types";
  */
 export function gameConfig(ctx: RequestContext) {
   return {
-    getDates: (): Promise<EndpointMap["gameConfig.getDates"]["response"]> => {
-      return ctx.request("gameConfig.getDates", {});
+    getDates: (options?: RequestOptions): Promise<EndpointMap["gameConfig.getDates"]["response"]> => {
+      return ctx.request("gameConfig.getDates", {}, options?.cache);
     },
-    getGameConfig: (): Promise<EndpointMap["gameConfig.getGameConfig"]["response"]> => {
-      return ctx.request("gameConfig.getGameConfig", {});
+    getGameConfig: (options?: RequestOptions): Promise<EndpointMap["gameConfig.getGameConfig"]["response"]> => {
+      return ctx.request("gameConfig.getGameConfig", {}, options?.cache);
     },
   };
 }

@@ -6,6 +6,7 @@ import {
 } from "../DTOs/article.dto";
 import { ArticleLanguage, ArticleCategory } from "../DTOs/constants.dto";
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 
 export interface getArticleByIdParams {
   articleId: string;
@@ -30,14 +31,12 @@ export interface getArticlesPaginatedParams {
 export function article(ctx: RequestContext) {
   return {
     getArticleById: (
-      params: getArticleByIdParams
-    ): Promise<GetArticleByIdResponse> => {
-      return ctx.request("article.getArticleById", params);
+      params: getArticleByIdParams, options?: RequestOptions): Promise<GetArticleByIdResponse> => {
+      return ctx.request("article.getArticleById", params, options?.cache);
     },
     getArticlesPaginated: (
-      params: getArticlesPaginatedParams
-    ): Promise<GetArticlesPaginatedResponse> => {
-      return ctx.request("article.getArticlesPaginated", params);
+      params: getArticlesPaginatedParams, options?: RequestOptions): Promise<GetArticlesPaginatedResponse> => {
+      return ctx.request("article.getArticlesPaginated", params, options?.cache);
     },
   };
 }

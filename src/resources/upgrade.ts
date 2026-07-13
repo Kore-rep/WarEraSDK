@@ -1,6 +1,7 @@
 // src/resources/upgrade.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -10,12 +11,11 @@ export function upgrade(ctx: RequestContext) {
   return {
     getUpgradeByTypeAndEntity: (
       type: string,
-      entityId: string
-    ): Promise<EndpointMap["upgrade.getUpgradeByTypeAndEntity"]["response"]> => {
+      entityId: string, options?: RequestOptions): Promise<EndpointMap["upgrade.getUpgradeByTypeAndEntity"]["response"]> => {
       return ctx.request("upgrade.getUpgradeByTypeAndEntity", {
         upgradeType: type,
         regionId: entityId,
-      });
+      }, options?.cache);
     },
   };
 }

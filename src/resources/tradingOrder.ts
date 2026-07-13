@@ -1,6 +1,7 @@
 // src/resources/tradingOrder.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,8 @@ import { EndpointMap } from "../types";
  */
 export function tradingOrder(ctx: RequestContext) {
   return {
-    getTopOrders: (): Promise<EndpointMap["tradingOrder.getTopOrders"]["response"]> => {
-      return ctx.request("tradingOrder.getTopOrders", {});
+    getTopOrders: (options?: RequestOptions): Promise<EndpointMap["tradingOrder.getTopOrders"]["response"]> => {
+      return ctx.request("tradingOrder.getTopOrders", {}, options?.cache);
     },
   };
 }

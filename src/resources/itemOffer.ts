@@ -1,6 +1,7 @@
 // src/resources/itemOffer.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,8 @@ import { EndpointMap } from "../types";
  */
 export function itemOffer(ctx: RequestContext) {
   return {
-    getById: (id: string): Promise<EndpointMap["itemOffer.getById"]["response"]> => {
-      return ctx.request("itemOffer.getById", { id });
+    getById: (id: string, options?: RequestOptions): Promise<EndpointMap["itemOffer.getById"]["response"]> => {
+      return ctx.request("itemOffer.getById", { id }, options?.cache);
     },
   };
 }

@@ -1,6 +1,7 @@
 // src/resources/itemTrading.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,8 @@ import { EndpointMap } from "../types";
  */
 export function itemTrading(ctx: RequestContext) {
   return {
-    getPrices: (): Promise<EndpointMap["itemTrading.getPrices"]["response"]> => {
-      return ctx.request("itemTrading.getPrices", {});
+    getPrices: (options?: RequestOptions): Promise<EndpointMap["itemTrading.getPrices"]["response"]> => {
+      return ctx.request("itemTrading.getPrices", {}, options?.cache);
     },
   };
 }

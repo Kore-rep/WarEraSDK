@@ -1,6 +1,7 @@
 // src/resources/government.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,8 @@ import { EndpointMap } from "../types";
  */
 export function government(ctx: RequestContext) {
   return {
-    getByCountryId: (countryId: string): Promise<EndpointMap["government.getByCountryId"]["response"]> => {
-      return ctx.request("government.getByCountryId", { countryId });
+    getByCountryId: (countryId: string, options?: RequestOptions): Promise<EndpointMap["government.getByCountryId"]["response"]> => {
+      return ctx.request("government.getByCountryId", { countryId }, options?.cache);
     },
   };
 }

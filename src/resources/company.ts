@@ -3,6 +3,7 @@ import {
   GetCompanyByIdResponse,
 } from "../DTOs/company.dto";
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 
 export interface getCompanyByIdParams {
   companyId: string;
@@ -35,8 +36,8 @@ export function company(ctx: RequestContext) {
      * @param params - The company ID params
      * @returns Company data
      */
-    getById: (params: getCompanyByIdParams): Promise<GetCompanyByIdResponse> => {
-      return ctx.request("company.getById", params);
+    getById: (params: getCompanyByIdParams, options?: RequestOptions): Promise<GetCompanyByIdResponse> => {
+      return ctx.request("company.getById", params, options?.cache);
     },
 
     /**
@@ -50,8 +51,8 @@ export function company(ctx: RequestContext) {
      * @param params.direction - Pagination direction (default: 'forward')
      * @returns Paginated list of company IDs with cursor info
      */
-    getCompanies: (params?: GetCompaniesParams): Promise<GetCompaniesResponse> => {
-      return ctx.request("company.getCompanies", params || {});
+    getCompanies: (params?: GetCompaniesParams, options?: RequestOptions): Promise<GetCompaniesResponse> => {
+      return ctx.request("company.getCompanies", params || {}, options?.cache);
     },
   };
 }

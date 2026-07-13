@@ -1,6 +1,7 @@
 // src/resources/mu.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,11 +9,11 @@ import { EndpointMap } from "../types";
  */
 export function mu(ctx: RequestContext) {
   return {
-    getById: (muId: string): Promise<EndpointMap["mu.getById"]["response"]> => {
-      return ctx.request("mu.getById", { muId });
+    getById: (muId: string, options?: RequestOptions): Promise<EndpointMap["mu.getById"]["response"]> => {
+      return ctx.request("mu.getById", { muId }, options?.cache);
     },
-    getManyPaginated: (page: number, limit: number): Promise<EndpointMap["mu.getManyPaginated"]["response"]> => {
-      return ctx.request("mu.getManyPaginated", { page, limit });
+    getManyPaginated: (page: number, limit: number, options?: RequestOptions): Promise<EndpointMap["mu.getManyPaginated"]["response"]> => {
+      return ctx.request("mu.getManyPaginated", { page, limit }, options?.cache);
     },
   };
 }

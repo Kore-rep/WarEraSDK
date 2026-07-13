@@ -1,6 +1,7 @@
 // src/resources/ranking.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,8 @@ import { EndpointMap } from "../types";
  */
 export function ranking(ctx: RequestContext) {
   return {
-    getRanking: async (): Promise<EndpointMap["ranking.getRanking"]["response"]> => {
-      return await ctx.request("ranking.getRanking", {});
+    getRanking: async (options?: RequestOptions): Promise<EndpointMap["ranking.getRanking"]["response"]> => {
+      return await ctx.request("ranking.getRanking", {}, options?.cache);
     },
   };
 }

@@ -1,6 +1,7 @@
 // src/resources/search.ts
 
 import { RequestContext } from "../request";
+import { RequestOptions } from "../requestOptions";
 import { EndpointMap } from "../types";
 
 /**
@@ -8,8 +9,12 @@ import { EndpointMap } from "../types";
  */
 export function search(ctx: RequestContext) {
   return {
-    searchAnything: (query: string): Promise<EndpointMap["search.searchAnything"]["response"]> => {
-      return ctx.request("search.searchAnything", { query });
+    /**
+     * Search users/MUs/countries by text. The live API expects `searchText`
+     * (a `query` param is rejected with BAD_REQUEST).
+     */
+    searchAnything: (searchText: string, options?: RequestOptions): Promise<EndpointMap["search.searchAnything"]["response"]> => {
+      return ctx.request("search.searchAnything", { searchText }, options?.cache);
     },
   };
 }
