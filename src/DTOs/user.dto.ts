@@ -47,6 +47,7 @@ export interface UserDTO {
     };
     leveling: {
         level: number;
+        prestigeLevel?: number;
         totalXp: number;
         dailyXpLeft: number;
         availableSkillPoints: number;
