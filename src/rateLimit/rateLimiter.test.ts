@@ -225,9 +225,10 @@ describe("RateLimiter", () => {
       await promise2;
 
       // Now at limit, next acquire should throw
-      const promise3 = limiter.acquire();
-      await jest.runAllTimersAsync();
-      await expect(promise3).rejects.toThrow(RateLimitError);
+      const attemptedAt = Date.now();
+      await expect(limiter.acquire()).rejects.toThrow(RateLimitError);
+      expect(Date.now()).toBe(attemptedAt);
+      expect(jest.getTimerCount()).toBe(0);
     });
 
     it("should include retryAfterMs in RateLimitError", async () => {
@@ -246,20 +247,10 @@ describe("RateLimiter", () => {
       await promise2;
 
       // Now at limit, next acquire should throw
-      const promise3 = limiter.acquire();
-      await jest.runAllTimersAsync();
-      
-      // Verify it throws and check error details
-      try {
-        await promise3;
-        expect(true).toBe(false); // Should not reach here
-      } catch (error) {
-        expect(error).toBeInstanceOf(RateLimitError);
-        if (error instanceof RateLimitError) {
-          expect(error.retryAfterMs).toBeGreaterThan(0);
-          expect(error.message).toContain("Rate limit exceeded");
-        }
-      }
+      const error = await limiter.acquire().catch((caught) => caught);
+      expect(error).toBeInstanceOf(RateLimitError);
+      expect(error.retryAfterMs).toBeGreaterThan(0);
+      expect(error.message).toContain("Rate limit exceeded");
     });
   });
 

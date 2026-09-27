@@ -122,6 +122,15 @@ export class RateLimiter {
   async acquire(): Promise<void> {
     this.pruneOldTimestamps();
 
+    // Throwing callers should not wait long enough for the current limit to expire.
+    if (this.config.throwOnLimit && this.isAtLimit()) {
+      const retryAfter = this.getTimeUntilSlotAvailable();
+      throw new RateLimitError(
+        `Rate limit exceeded. Max ${this.config.maxRequests} requests per ${this.config.windowMs}ms.`,
+        retryAfter
+      );
+    }
+
     // Apply gradual backoff as we approach the limit
     await this.applyBackoff();
 
