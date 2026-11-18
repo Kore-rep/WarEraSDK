@@ -169,7 +169,7 @@ await api.invalidateCache('user.getUserLite', { userId: '123' });
 | `ranking` | `getRanking` |
 | `search` | `searchAnything` |
 | `gameConfig` | `getDates`, `getGameConfig` |
-| `user` | `getUserLite`, `getUsersByCountry` |
+| `user` | `getUserLite`, `getUserSkills`, `getUsersByCountry` |
 | `article` | `getArticleById`, `getArticlesPaginated` |
 | `message` | `getMessagesByArticleId` |
 | `mu` | `getById`, `getManyPaginated` |

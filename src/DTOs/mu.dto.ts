@@ -11,12 +11,13 @@ export interface MuLevelingDTO {
 }
 
 export interface MuRankingsDTO {
-  muWeeklyDamages: RankingEntryDTO;
-  muBounty: RankingEntryDTO;
-  muReputation: RankingEntryDTO;
-  muDamages: RankingEntryDTO;
-  muTerrain: RankingEntryDTO;
   muWealth: RankingEntryDTO;
+  muWeeklyDamages?: RankingEntryDTO;
+  muBounty?: RankingEntryDTO;
+  muReputation?: RankingEntryDTO;
+  muDamages?: RankingEntryDTO;
+  muTerrain?: RankingEntryDTO;
+  muMercenaryEarnings?: RankingEntryDTO;
 }
 
 export interface MuActiveUpgradeLevelsDTO {
@@ -26,7 +27,7 @@ export interface MuActiveUpgradeLevelsDTO {
 
 export interface MuDTO {
   roles: MuRolesDTO;
-  leveling: MuLevelingDTO;
+  leveling?: MuLevelingDTO;
   mercenaryReputation: number;
   _id: string;
   user: string;
@@ -37,11 +38,16 @@ export interface MuDTO {
   updatedAt: string;
   __v: number;
   activeUpgradeLevels: MuActiveUpgradeLevelsDTO;
-  avatarUrl: string;
+  avatarUrl?: string;
+  animatedAvatarUrl?: string;
   rankings: MuRankingsDTO;
   investedMoneyByUsers?: Record<string, number>;
   country: string;
-  lastCountryChangeAt: string; // ISO timestamp
+  /** MU type, e.g. "privateMercenary". */
+  type?: string;
+  lastCountryChangeAt?: string; // ISO timestamp
+  lastAnnouncementAt?: string; // ISO timestamp
+  lastReputationBuyAt?: string; // ISO timestamp
 }
 
 export interface GetMuByIdParams {

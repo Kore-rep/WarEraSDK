@@ -1,112 +1,167 @@
 import { RankingEntryDTO } from './constants.dto';
 /**
- * Skill stat interface - Represents a single skill with all its modifiers and values
+ * Skill names served by user.getUserSkills (matches gameConfig `skills` keys).
+ */
+export type SkillName =
+    | "energy"
+    | "stamina"
+    | "health"
+    | "hunger"
+    | "attack"
+    | "companies"
+    | "production"
+    | "criticalChance"
+    | "criticalDamages"
+    | "armor"
+    | "precision"
+    | "dodge"
+    | "lootChance"
+    | "management";
+
+/**
+ * Skill stat interface - Represents a single skill with all its modifiers and values.
+ * Modifier fields are only present on the skills they apply to.
  */
 export interface SkillStatDTO {
     level: number;
-    ammoPercent?: number | null;
-    buffsPercent?: number | null;
-    debuffsPercent?: number | null;
-    militaryRankPercent?: number | null;
-    value: number | null;
-    weapon: number | null;
-    equipment: number | null;
-    overflow: number | null;
-    limited: number | null;
+    /** Prestige tier invested in this skill. */
+    prestige?: number;
+    /** Absent on some armor/dodge entries. */
+    value?: number;
     total: number;
-    totalAfterSoftCap: number | null;
+    /** attack only. */
+    ammoPercent?: number;
+    buffsPercent?: number;
+    debuffsPercent?: number;
+    militaryRankPercent?: number;
+    /** attack, criticalChance. */
+    weapon?: number | null;
+    /** armor, dodge, criticalDamages, precision. */
+    equipment?: number | null;
+    overflow?: number;
+    limited?: number;
+    /** Strategic-resource bonus. */
+    strategic?: number;
+    /** Temporary part that expires at `skillsExpiration.<skill>.tournament`. */
+    tournament?: number;
+    /** armor, dodge. */
+    totalAfterSoftCap?: number;
+    /** Bar skills: energy, stamina, health, hunger, production. */
     currentBarValue?: number;
     hourlyBarRegen?: number;
 }
 
 /**
- *User DTO - Represents a user
+ * Player leveling / skill-point state.
+ */
+export interface UserLevelingDTO {
+    level: number;
+    prestigeLevel: number;
+    prestige: number;
+    xp: number;
+    totalXp: number;
+    dailyXpLeft: number;
+    availableSkillPoints: number;
+    spentSkillPoints: number;
+    totalSkillPoints: number;
+    freeReset: number;
+}
+
+/**
+ * User dates. ISO date strings; event-based keys are only present once the event has happened.
+ */
+export interface UserDatesDTO {
+    lastConnectionAt: string;
+    lastNotificationsCheckAt: string;
+    lastCountryMessageCheckAt: string;
+    lastGlobalMessageCheckAt: string;
+    lastEventsCheckAt: string;
+    citizenSince?: string;
+    lastCitizenshipChangeAt?: string;
+    lastTakingControlAt?: string;
+    lastWorkAt?: string;
+    lastDailyRewardClaimedAt?: string;
+    lastDailyCalendarClaimedAt?: string;
+    lastHelpAskedAt?: string;
+    lastFreeTravelHomeAt?: string;
+    lastComebackClaimedAt?: string;
+    lastFiredFromGovAt?: string;
+    lastGdprExportAt?: string;
+    lastSeenGovernmentAnnouncementAt?: string;
+    lastSeenAnnouncementAt?: string;
+    lastManagerCareAt?: string;
+    lastSkillsResetAt?: string;
+    prestigeXpCompensatedAt?: string;
+    missionXpCompensatedAt?: string;
+    comebackPendingGapDays?: number;
+}
+
+/**
+ *User DTO - Represents a user as returned by user.getUserLite.
+ * `skills` and `skillsExpiration` moved to user.getUserSkills.
  */
 export interface UserDTO {
     _id: string;
     username: string;
     country: string;
     isActive: boolean;
-    avatarUrl: string;
-    mu: string;
+    avatarUrl?: string;
+    animatedAvatarUrl?: string;
+    mu?: string;
     createdAt: string; // ISO date string
-    dates: {
-        lastConnectionAt: string; // ISO date string
-        lastNotificationsCheckAt: string; // ISO date string
-        lastCountryMessageCheckAt: string; // ISO date string
-        lastGlobalMessageCheckAt: string; // ISO date string
-        lastEventsCheckAt: string; // ISO date string
-        lastWorkOfferApplications: string[]; // ISO date strings
-        lastWorkAt: string; // ISO date string
-        lastDailyRewardClaimedAt: string; // ISO date string
-        lastHelpAskedAt: string; // ISO date string
-        lastHiresAt: string[]; // ISO date strings
-        lastCompanyJoinedAt: string; // ISO date string
-        lastCitizenshipChangeAt: string; // ISO date string
-        lastSkillsResetAt: string; // ISO date string
+    dates: UserDatesDTO;
+    leveling: UserLevelingDTO;
+    stats?: {
+        damagesCount?: number;
     };
-    leveling: {
-        level: number;
-        prestigeLevel?: number;
-        totalXp: number;
-        dailyXpLeft: number;
-        availableSkillPoints: number;
-        spentSkillPoints: number;
-        totalSkillPoints: number;
-        freeReset: number;
-    };
-    skills:  {
-        energy: SkillStatDTO;
-        health: SkillStatDTO;
-        hunger: SkillStatDTO;
-        attack: SkillStatDTO;
-        companies: SkillStatDTO;
-        entrepreneurship: SkillStatDTO;
-        production: SkillStatDTO;
-        criticalChance: SkillStatDTO;
-        criticalDamages: SkillStatDTO;
-        armor: SkillStatDTO;
-        precision: SkillStatDTO;
-        dodge: SkillStatDTO;
-        lootChance: SkillStatDTO;
-        management: SkillStatDTO;
-    };
-    stats: {
-        damagesCount: number;
-    };
-    rankings: {
-        userDamages: RankingEntryDTO;
-        weeklyUserDamages: RankingEntryDTO;
-        userWealth: RankingEntryDTO;
+    rankings?: {
         userLevel: RankingEntryDTO;
         userReferrals: RankingEntryDTO;
-        userSubscribers: RankingEntryDTO;
-        userTerrain: RankingEntryDTO;
-        userPremiumMonths: RankingEntryDTO;
-        userCasesOpened: RankingEntryDTO;
-        userBounty: RankingEntryDTO;
-        userSkinsOwned: RankingEntryDTO;
+        userWealth: RankingEntryDTO;
+        weeklyUserDamages?: RankingEntryDTO;
+        userDamages?: RankingEntryDTO;
+        userSubscribers?: RankingEntryDTO;
+        userTerrain?: RankingEntryDTO;
+        userPremiumMonths?: RankingEntryDTO;
+        userPremiumGifts?: RankingEntryDTO;
+        userCasesOpened?: RankingEntryDTO;
+        userGemsPurchased?: RankingEntryDTO;
+        userBounty?: RankingEntryDTO;
+        userMercenaryEarnings?: RankingEntryDTO;
+        userSkinsOwned?: RankingEntryDTO;
+        userMilestoneTiers?: RankingEntryDTO;
+        userMissionsClaimed?: RankingEntryDTO;
     };
     militaryRank: number;
-    infos: {
-      isPremium: boolean;
-      premiumMonthsCount: number;
-      colorScheme: string;
-      font: string;
-      description: string;
+    infos?: {
+      isPremium?: boolean;
+      premiumMonthsCount?: number;
+      premiumGiftsCount?: number;
+      colorScheme?: string;
+      font?: string;
+      description?: string;
+      banner?: string;
+      usernameEffect?: string;
+      adminType?: string;
+      isBanned?: boolean;
+      tournamentWonAt?: string;
       vicePresidentOf?: string;
+      congressMemberOf?: string;
+      minOfEconomyOf?: string;
+      ministerOf?: string;
+      ministerTitle?: string;
     };
-    equippedSkinKeys: {
-      rifle?: string;
-      helmet?: string;
-      tank?: string;
-    };
-    buffs: {
+    equippedSkinKeys?: Partial<Record<
+      | "ammo" | "boots" | "chest" | "gloves" | "gun" | "heavyAmmo" | "helmet"
+      | "jet" | "knife" | "lightAmmo" | "pants" | "rifle" | "sniper" | "tank",
+      string
+    >>;
+    buffs?: {
       debuffEndAt?: string;
       debuffCodes?: string[]; // cocain is pill
+      debuffWarningNotifiedAt?: string;
       buffEndAt?: string;
       buffCodes?: string[]; // cocain is pill
-
     };
   };
 
@@ -115,7 +170,33 @@ export interface UserDTO {
  */
 export interface GetUserLiteResponse {
     result: {
-        data: UserDTO;  
+        data: UserDTO;
+    }
+}
+
+/**
+ * User skills DTO - returned by user.getUserSkills.
+ */
+export interface UserSkillsDTO {
+    _id: string;
+    skills: Record<SkillName, SkillStatDTO>;
+    /**
+     * Keyed by skill. Each entry maps a temporary-bonus source (e.g. `tournament`) to the ISO
+     * date it expires; entries can be empty. Absent for some users.
+     */
+    skillsExpiration?: Partial<Record<SkillName, Record<string, string>>>;
+    leveling: UserLevelingDTO;
+    dates: {
+        lastSkillsResetAt?: string; // ISO date string
+    };
+}
+
+/**
+ * Response for user.getUserSkills endpoint
+ */
+export interface GetUserSkillsResponse {
+    result: {
+        data: UserSkillsDTO;
     }
 }
 

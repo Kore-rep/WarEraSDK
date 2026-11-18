@@ -2,6 +2,7 @@
 
 import {
   GetUserLiteResponse,
+  GetUserSkillsResponse,
   GetUsersByCountryParams,
   UsersByCountryResponseDto,
 } from "./DTOs/user.dto";
@@ -226,6 +227,10 @@ export type EndpointMap = {
   "user.getUserLite": {
     params: { userId: string };
     response: GetUserLiteResponse;
+  };
+  "user.getUserSkills": {
+    params: { userId: string };
+    response: GetUserSkillsResponse;
   };
   "user.getUsersByCountry": {
     params: GetUsersByCountryParams;
