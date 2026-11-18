@@ -170,6 +170,7 @@ await api.invalidateCache('user.getUserLite', { userId: '123' });
 | `search` | `searchAnything` |
 | `gameConfig` | `getDates`, `getGameConfig` |
 | `user` | `getUserLite`, `getUserSkills`, `getUsersByCountry` |
+| `battleOrder` | `getByBattle` |
 | `article` | `getArticleById`, `getArticlesPaginated` |
 | `message` | `getMessagesByArticleId` |
 | `mu` | `getById`, `getManyPaginated` |

@@ -18,6 +18,7 @@ import { mu } from "./resources/mu";
 import { ranking } from "./resources/ranking";
 import { region } from "./resources/region";
 import { round } from "./resources/round";
+import { battleOrder } from "./resources/battleOrder";
 import { search } from "./resources/search";
 import { tradingOrder } from "./resources/tradingOrder";
 import { transaction } from "./resources/transaction";
@@ -68,6 +69,7 @@ export function createAPI(config: APIConfig = {}): APIClient {
     region: region(ctx),
     battle: battle(ctx),
     round: round(ctx),
+    battleOrder: battleOrder(ctx),
     battleRanking: battleRanking(ctx),
     mercenaryContractAuction: mercenaryContractAuction(ctx),
     itemTrading: itemTrading(ctx),

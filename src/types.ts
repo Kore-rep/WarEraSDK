@@ -19,6 +19,10 @@ import {
 } from "./DTOs/article.dto";
 import { GetBattlesResponse } from "./DTOs/battle.dto";
 import {
+  GetBattleOrdersByBattleParams,
+  GetBattleOrdersByBattleResponse,
+} from "./DTOs/battleOrder.dto";
+import {
   GetCompaniesResponse,
   GetCompanyByIdResponse,
 } from "./DTOs/company.dto";
@@ -171,6 +175,10 @@ export type EndpointMap = {
   "battle.getBattles": {
     params: GetBattlesParams;
     response: GetBattlesResponse;
+  };
+  "battleOrder.getByBattle": {
+    params: GetBattleOrdersByBattleParams;
+    response: GetBattleOrdersByBattleResponse;
   };
   "round.getById": {
     params: { id: string };

@@ -16,6 +16,7 @@ import type { MuResource } from "../resources/mu";
 import type { RankingResource } from "../resources/ranking";
 import type { RegionResource } from "../resources/region";
 import type { RoundResource } from "../resources/round";
+import type { BattleOrderResource } from "../resources/battleOrder";
 import type { SearchResource } from "../resources/search";
 import type { TradingOrderResource } from "../resources/tradingOrder";
 import type { TransactionResource } from "../resources/transaction";
@@ -35,6 +36,7 @@ export interface APIClient {
   region: RegionResource;
   battle: BattleResource;
   round: RoundResource;
+  battleOrder: BattleOrderResource;
   battleRanking: BattleRankingResource;
   mercenaryContractAuction: MercenaryContractAuctionResource;
   itemTrading: ItemTradingResource;

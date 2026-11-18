@@ -41,6 +41,7 @@ export type { MuResource } from "./resources/mu";
 export type { RankingResource } from "./resources/ranking";
 export type { RegionResource } from "./resources/region";
 export type { RoundResource } from "./resources/round";
+export type { BattleOrderResource } from "./resources/battleOrder";
 export type { SearchResource } from "./resources/search";
 export type { TradingOrderResource } from "./resources/tradingOrder";
 export type { TransactionResource } from "./resources/transaction";
@@ -63,6 +64,7 @@ export type { RegionRequestOptions, getRegionByIdParams } from "./resources/regi
 // APIClient lives in api.dto and is already exported above.
 export type * from "./DTOs/article.dto";
 export type * from "./DTOs/battle.dto";
+export type * from "./DTOs/battleOrder.dto";
 export type * from "./DTOs/battleRanking.dto";
 export type * from "./DTOs/company.dto";
 export type * from "./DTOs/constants.dto";
